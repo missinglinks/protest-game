@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://NPCs/Citizen/Boid.gd" type="Script" id=1]
 [ext_resource path="res://Sprites/Characters/c1.png" type="Texture" id=2]
@@ -8,8 +8,7 @@
 [ext_resource path="res://NPCs/Citizen/CitizenProtest.gd" type="Script" id=6]
 [ext_resource path="res://NPCs/Citizen/CitizenJoin.gd" type="Script" id=7]
 [ext_resource path="res://NPCs/Citizen/InputChainTask.gd" type="Script" id=8]
-
-
+[ext_resource path="res://NPCs/BoidDebug.gd" type="Script" id=9]
 
 [sub_resource type="CylinderShape" id=1]
 radius = 0.0420858
@@ -80,6 +79,10 @@ script = ExtResource( 5 )
 [node name="Protest" type="Node" parent="StateMachine"]
 script = ExtResource( 6 )
 
+[node name="TurnDelay" type="Timer" parent="StateMachine/Protest"]
+wait_time = 0.6
+one_shot = true
+
 [node name="Leave" type="Node" parent="StateMachine"]
 
 [node name="Join" type="Node" parent="StateMachine"]
@@ -114,5 +117,9 @@ __meta__ = {
 }
 
 [node name="Tween" type="Tween" parent="CanvasLayer/InputChainTask"]
+
+[node name="BoidDebug" type="Node2D" parent="CanvasLayer"]
+script = ExtResource( 9 )
+[connection signal="timeout" from="StateMachine/Protest/TurnDelay" to="StateMachine/Protest" method="_on_TurnDelay_timeout"]
 [connection signal="body_entered" from="PlayerNoticeRadius" to="StateMachine/Idle" method="_on_PlayerNoticeRadius_body_entered"]
 [connection signal="body_exited" from="PlayerNoticeRadius" to="StateMachine/Join" method="_on_PlayerNoticeRadius_body_exited"]

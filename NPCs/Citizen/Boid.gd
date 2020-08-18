@@ -21,8 +21,13 @@ var current_task: Node = null
 
 var joined_protest: bool
 
+onready var sprite = $Sprite3D
 onready var fsm = $StateMachine
+onready var animation_player = $AnimationPlayer
 onready var task_ui = $CanvasLayer/InputChainTask
+
+
+
 
 func _ready() -> void:
 	add_to_group("Boids")

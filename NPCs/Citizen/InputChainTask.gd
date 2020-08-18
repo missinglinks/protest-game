@@ -12,6 +12,7 @@ var task_symbol_scene = preload("res://UI/Notifications/InputTaskSymbol.tscn")
 var current_task 
 
 
+
 func _ready() -> void:
 	var screen_pos = get_viewport().get_camera().unproject_position(host.global_transform.origin)
 	rect_position = screen_pos.floor() + Vector2(-4, - 55)
