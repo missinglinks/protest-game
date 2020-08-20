@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Models/Street/StreetBlockT1.tscn" type="PackedScene" id=1]
+
+[node name="StreetBlockT1" type="Spatial"]
+
+[node name="StreetBlockT1" parent="." instance=ExtResource( 1 )]

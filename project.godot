@@ -9,6 +9,16 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "AudioStreamPlayer",
+"class": "AudioStreamPlayerADSR",
+"language": "GDScript",
+"path": "res://addons/midi/ADSR.gd"
+}, {
+"base": "Reference",
+"class": "Bank",
+"language": "GDScript",
+"path": "res://addons/midi/Bank.gd"
+}, {
 "base": "Spatial",
 "class": "BeatManager",
 "language": "GDScript",
@@ -24,10 +34,25 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://Systems/InputManager.gd"
 }, {
+"base": "Node",
+"class": "MidiPlayer",
+"language": "GDScript",
+"path": "res://addons/midi/MidiPlayer.gd"
+}, {
 "base": "KinematicBody",
 "class": "Player",
 "language": "GDScript",
 "path": "res://Player/Player.gd"
+}, {
+"base": "Reference",
+"class": "SMF",
+"language": "GDScript",
+"path": "res://addons/midi/SMF.gd"
+}, {
+"base": "Reference",
+"class": "SoundFont",
+"language": "GDScript",
+"path": "res://addons/midi/SoundFont.gd"
 }, {
 "base": "Node",
 "class": "State",
@@ -45,10 +70,15 @@ _global_script_classes=[ {
 "path": "res://Systems/Task.gd"
 } ]
 _global_script_class_icons={
+"AudioStreamPlayerADSR": "",
+"Bank": "",
 "BeatManager": "",
 "Boid": "",
 "InputManager": "",
+"MidiPlayer": "",
 "Player": "",
+"SMF": "",
+"SoundFont": "",
 "State": "",
 "StateMachine": "",
 "Task": ""
@@ -70,6 +100,10 @@ Utils="*res://Systems/Utils.gd"
 window/size/width=1920
 window/size/height=1080
 window/stretch/mode="viewport"
+
+[editor_plugins]
+
+enabled=PoolStringArray( "midi" )
 
 [input]
 

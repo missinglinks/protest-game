@@ -17,8 +17,8 @@ func _ready():
 
 func _process(delta: float) -> void:
 	global_position = get_viewport().get_camera().unproject_position(host.global_transform.origin)
-	print(position)
+	#print(position)
 	
 	target = get_viewport().get_camera().unproject_position(host.global_transform.origin + host.velocity)-global_position
-	print(global_position," ", target)
+	#print(global_position," ", target)
 	update()

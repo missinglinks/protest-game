@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Models/Street/StreetBlockCrossing.tscn" type="PackedScene" id=1]
+
+[node name="StreetBlockCrossing" type="Spatial"]
+
+[node name="Plane" parent="." instance=ExtResource( 1 )]
