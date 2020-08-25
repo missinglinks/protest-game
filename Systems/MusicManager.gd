@@ -15,7 +15,7 @@ onready var player = $AudioStreamPlayer
 enum { WAIT, INPUT_ON, INPUT_OFF }
 var state: int
 
-var offset: float = 0.00
+var offset: float = 0.0
 var bpm: float = 100
 var beat: float = 60 / bpm
 var beat_offset = beat * 0.25

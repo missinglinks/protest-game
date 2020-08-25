@@ -39,18 +39,27 @@ func _ready() -> void:
 func setup() -> void:
 	pass
 
-func add_task() -> void:
+func join_protest() -> void:
+	fsm.transition_to(fsm.states.Protest)
+
+func add_task(difficulty: int = 4, lifetime: float = 0) -> Node:
 	if current_task == null:
 		current_task = task_scene.instance()
 		add_child(current_task)
-		current_task.setup()
+		current_task.setup(difficulty, lifetime)
 		task_ui.display(current_task)
 		current_task.connect("task_completed", self, "_on_task_completed")
+	return current_task
 
 func remove_task() -> void:
 	task_ui.remove()
+	yield(get_tree().create_timer(0.5), "timeout")
+	if is_instance_valid(current_task):
+		current_task.remove()
 	current_task = null
+	
+	
 
 func _on_task_completed() -> void:
 	remove_task()
-	fsm.transition_to(fsm.states.Protest)
+	#fsm.transition_to(fsm.states.Protest)

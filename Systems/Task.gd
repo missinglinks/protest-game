@@ -11,9 +11,11 @@ var input_manager: Spatial
 var current_progress = 0
 var completed = false
 
+onready var timer = $Timer
+
 signal task_completion_progress
 signal task_completed
-
+signal task_failed
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -21,11 +23,15 @@ func _ready():
 
 	pass
 	
-func setup(n: int = 4, timed: bool = false) -> void:
+func setup(n: int = 4, lifetime: float = 0 ) -> void:
 	task = generate_random_task(n)
 	
 	input_manager = Refs.input_manager
 	input_manager.connect("input_received", self, "_on_input_received")
+	
+	if lifetime > 0.0:
+		timer.wait_time = lifetime
+		timer.start()
 
 
 func generate_random_task(n: int = 4) -> Array:
@@ -58,4 +64,11 @@ func _on_input_received(input_type: int) -> void:
 		emit_signal("task_completed")
 
 func remove() -> void:
+	if not completed:
+		emit_signal("task_failed")
+	
 	queue_free()
+
+
+func _on_Timer_timeout():
+	get_parent().remove_task()

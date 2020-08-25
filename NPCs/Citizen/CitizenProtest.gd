@@ -87,7 +87,7 @@ func physics_update(delta: float) -> State:
 	host.velocity *= 0.3
 	acceleration *= 0.9
 	
-	host.global_transform.origin.y = 0
+	#host.global_transform.origin.y = 8
 
 	host.animation_player.update_animation()
 	return null
@@ -149,9 +149,10 @@ func calculate_following(target: Vector3) -> Vector3:
 func get_neighbours() -> Array:
 	var neighbours = []
 	#neighbours.append(Refs.player)
-	for boid in host.get_parent().get_children():
-		if host.global_transform.origin.distance_to(boid.global_transform.origin) < perception_radius and not boid == host and boid.fsm.state == boid.fsm.states.Protest:
-			neighbours.append(boid)
+	for boid in get_tree().get_nodes_in_group("Protest"):#host.get_parent().get_children():
+		if boid is Boid:
+			if host.global_transform.origin.distance_to(boid.global_transform.origin) < perception_radius and not boid == host and boid.fsm.state == boid.fsm.states.Protest:
+				neighbours.append(boid)
 	return neighbours
 	
 	

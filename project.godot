@@ -156,5 +156,5 @@ dance_right={
 
 quality/2d/use_pixel_snap=true
 quality/shadows/filter_mode=2
-quality/filters/msaa=3
+quality/filters/msaa=2
 environment/default_environment="res://default_env.tres"
