@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/gray.png-01b1ebae5081f5d5f22c2b687def1112.stex"
+path="res://.import/down_button_2.png-426819190da4a9d1af0a7c249330ccfe.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/UI/gray.png"
-dest_files=[ "res://.import/gray.png-01b1ebae5081f5d5f22c2b687def1112.stex" ]
+source_file="res://Sprites/UI/down_button_2.png"
+dest_files=[ "res://.import/down_button_2.png-426819190da4a9d1af0a7c249330ccfe.stex" ]
 
 [params]
 

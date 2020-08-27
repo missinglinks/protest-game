@@ -85,20 +85,29 @@ func _on_completion_progress(n):
 	var i = 0
 	for symbol in container.get_children():
 		if i < n:
-			symbol.modulate = Color(1.0, 1.0, 0.0, 1.0)
+			symbol.pressed = true
+			symbol.down()
+			symbol.modulate = Color(0.6, 0.9, 0.7, 1.0)
 			if max_completion < i:
 				symbol.emit_particles()
 				max_completion = i
 		else:
+			symbol.pressed = false
 			symbol.modulate = Color(1.0, 1.0, 1.0, 1.0)
 		i += 1
 	
 	
 
 func _on_beat_input_started() -> void:
-	$ColorRect/HBoxContainer.modulate = Color(1.0, 1.0, 1.0, 1.0)
-	$ColorRect/HBoxContainer.rect_scale = Vector2(1.05, 1.05)
+	#$ColorRect/HBoxContainer.modulate = Color(1.0, 1.0, 1.0, 1.0)
+	#$ColorRect/HBoxContainer.rect_scale = Vector2(1.05, 1.05)
+	for prompt in $ColorRect/HBoxContainer.get_children():
+		if !prompt.pressed:
+			prompt.down()
 	
 func _on_beat_input_ended() -> void:
-	$ColorRect/HBoxContainer.modulate = Color(1.0, 1.0, 1.0, 0.7)
-	$ColorRect/HBoxContainer.rect_scale = Vector2(1.0, 1.0)
+	#$ColorRect/HBoxContainer.modulate = Color(1.0, 1.0, 1.0, 0.7)
+	#$ColorRect/HBoxContainer.rect_scale = Vector2(1.0, 1.0)
+	for prompt in $ColorRect/HBoxContainer.get_children():
+		if !prompt.pressed:
+			prompt.up()
