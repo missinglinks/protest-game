@@ -1,32 +1,107 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=17 format=2]
 
-[ext_resource path="res://Models/Street/StreetBlockCorner.tscn" type="PackedScene" id=1]
-[ext_resource path="res://Models/Street/StreetBlockCrossing.tscn" type="PackedScene" id=2]
-[ext_resource path="res://Models/Street/StreetBlockPark.tscn" type="PackedScene" id=3]
-[ext_resource path="res://Models/Street/StreetBlockStraight.tscn" type="PackedScene" id=4]
-[ext_resource path="res://Models/Street/StreetBlockT2.tscn" type="PackedScene" id=5]
-[ext_resource path="res://Models/Street/StreetBlockLot.tscn" type="PackedScene" id=6]
-[ext_resource path="res://Models/Street/StreetBlockT1.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Sprites/Street/street-stop.png" type="Texture" id=1]
+[ext_resource path="res://Sprites/Street/park-1.png" type="Texture" id=2]
+[ext_resource path="res://Sprites/Street/lot.png" type="Texture" id=3]
+[ext_resource path="res://Sprites/Street/street-crossing-1.png" type="Texture" id=4]
+[ext_resource path="res://Sprites/Street/street-corner.png" type="Texture" id=6]
+[ext_resource path="res://Sprites/Street/street-straight.png" type="Texture" id=8]
+[ext_resource path="res://Sprites/Street/street-crossing-2.png" type="Texture" id=9]
+
+[sub_resource type="PlaneMesh" id=1]
+
+[sub_resource type="SpatialMaterial" id=2]
+albedo_texture = ExtResource( 8 )
+
+[sub_resource type="ConcavePolygonShape" id=3]
+data = PoolVector3Array( 1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, -1, 0, -1, 1, 0, -1 )
+
+[sub_resource type="SpatialMaterial" id=4]
+albedo_texture = ExtResource( 9 )
+
+[sub_resource type="SpatialMaterial" id=5]
+albedo_texture = ExtResource( 6 )
+
+[sub_resource type="SpatialMaterial" id=6]
+albedo_texture = ExtResource( 3 )
+
+[sub_resource type="SpatialMaterial" id=7]
+albedo_texture = ExtResource( 2 )
+
+[sub_resource type="SpatialMaterial" id=73]
+albedo_texture = ExtResource( 1 )
+
+[sub_resource type="SpatialMaterial" id=9]
+albedo_texture = ExtResource( 4 )
 
 [node name="Spatial" type="Spatial"]
 
-[node name="StreetBlockCorner" parent="." instance=ExtResource( 1 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 10.9771, 2.12963, 9.08054 )
+[node name="StreetStaight" type="MeshInstance" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4.18188 )
+mesh = SubResource( 1 )
+material/0 = SubResource( 2 )
 
-[node name="StreetBlockCrossing" parent="." instance=ExtResource( 2 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.96447, 2.12963, 4.44137 )
+[node name="StaticBody" type="StaticBody" parent="StreetStaight"]
 
-[node name="StreetBlockLot" parent="." instance=ExtResource( 6 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.88669, 2.12963, 9.08054 )
+[node name="CollisionShape" type="CollisionShape" parent="StreetStaight/StaticBody"]
+shape = SubResource( 3 )
 
-[node name="StreetBlockPark" parent="." instance=ExtResource( 3 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.96447, 2.12963, 11.3843 )
+[node name="StreetCrossing" type="MeshInstance" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.6428 )
+mesh = SubResource( 1 )
+material/0 = SubResource( 4 )
 
-[node name="StreetBlockCorner2" parent="." instance=ExtResource( 4 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4.82915, 2.12963, 6.10815 )
+[node name="StaticBody" type="StaticBody" parent="StreetCrossing"]
 
-[node name="StreetBlockT1" parent="." instance=ExtResource( 7 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 3.67873, 2.12963, 11.4109 )
+[node name="CollisionShape" type="CollisionShape" parent="StreetCrossing/StaticBody"]
+shape = SubResource( 3 )
 
-[node name="StreetBlockT2" parent="." instance=ExtResource( 5 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 11.7284, 2.12963, 5.3253 )
+[node name="StreetCorner" type="MeshInstance" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.6428 )
+mesh = SubResource( 1 )
+material/0 = SubResource( 5 )
+
+[node name="StaticBody" type="StaticBody" parent="StreetCorner"]
+
+[node name="CollisionShape" type="CollisionShape" parent="StreetCorner/StaticBody"]
+shape = SubResource( 3 )
+
+[node name="StreetLot" type="MeshInstance" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 3.70268, 0, -2.6428 )
+mesh = SubResource( 1 )
+material/0 = SubResource( 6 )
+
+[node name="StaticBody" type="StaticBody" parent="StreetLot"]
+
+[node name="CollisionShape" type="CollisionShape" parent="StreetLot/StaticBody"]
+shape = SubResource( 3 )
+
+[node name="StreetPark" type="MeshInstance" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 3.70268, 0, 3.32473 )
+mesh = SubResource( 1 )
+material/0 = SubResource( 7 )
+
+[node name="StaticBody" type="StaticBody" parent="StreetPark"]
+
+[node name="CollisionShape" type="CollisionShape" parent="StreetPark/StaticBody"]
+shape = SubResource( 3 )
+
+[node name="StreetT1" type="MeshInstance" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 3.70268, 0, 8.08165 )
+mesh = SubResource( 1 )
+material/0 = SubResource( 73 )
+
+[node name="StaticBody" type="StaticBody" parent="StreetT1"]
+
+[node name="CollisionShape" type="CollisionShape" parent="StreetT1/StaticBody"]
+shape = SubResource( 3 )
+
+[node name="StreetT2" type="MeshInstance" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.011, 0, 8.08165 )
+mesh = SubResource( 1 )
+material/0 = SubResource( 9 )
+
+[node name="StaticBody" type="StaticBody" parent="StreetT2"]
+
+[node name="CollisionShape" type="CollisionShape" parent="StreetT2/StaticBody"]
+shape = SubResource( 3 )

@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://NPCs/Citizen/Boid.gd" type="Script" id=1]
 [ext_resource path="res://Sprites/Characters/c1.png" type="Texture" id=2]
@@ -9,6 +9,8 @@
 [ext_resource path="res://NPCs/Citizen/CitizenJoin.gd" type="Script" id=7]
 [ext_resource path="res://NPCs/Citizen/InputChainTask.gd" type="Script" id=8]
 [ext_resource path="res://NPCs/BoidDebug.gd" type="Script" id=9]
+[ext_resource path="res://Sprites/Characters/character_sign_01.png" type="Texture" id=10]
+[ext_resource path="res://Sprites/UI/textbox.png" type="Texture" id=11]
 
 [sub_resource type="CylinderShape" id=1]
 radius = 0.0420858
@@ -16,37 +18,55 @@ height = 0.0781025
 
 [sub_resource type="Animation" id=2]
 resource_name = "Idle"
-tracks/0/type = "value"
-tracks/0/path = NodePath("Sprite3D:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 1,
-"values": [ 0 ]
-}
-
-[sub_resource type="Animation" id=3]
-resource_name = "Run"
 length = 0.4
 loop = true
 tracks/0/type = "value"
-tracks/0/path = NodePath("Sprite3D:frame")
+tracks/0/path = NodePath("Sprite3D2:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.1, 0.2 ),
-"transitions": PoolRealArray( 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
 "update": 1,
-"values": [ 1, 2, 3 ]
+"values": [ 10, 11 ]
 }
 
-[sub_resource type="CylinderShape" id=4]
+[sub_resource type="Animation" id=3]
+resource_name = "ProtestIdle"
+length = 0.4
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite3D2:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 6, 7, 8, 9 ]
+}
+
+[sub_resource type="Animation" id=4]
+length = 0.6
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite3D2:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2, 3, 4, 5 ]
+}
+
+[sub_resource type="CylinderShape" id=5]
 radius = 0.81864
 height = 0.877734
 
@@ -57,9 +77,10 @@ script = ExtResource( 1 )
 
 [node name="Sprite3D" type="Sprite3D" parent="."]
 transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0.100853, 0 )
+visible = false
 texture = ExtResource( 2 )
 hframes = 5
-frame = 3
+frame = 2
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0442969, 0.0755989 )
@@ -67,7 +88,8 @@ shape = SubResource( 1 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 anims/Idle = SubResource( 2 )
-anims/Run = SubResource( 3 )
+anims/ProtestIdle = SubResource( 3 )
+anims/Run = SubResource( 4 )
 script = ExtResource( 3 )
 
 [node name="StateMachine" type="Node" parent="."]
@@ -83,6 +105,8 @@ script = ExtResource( 6 )
 wait_time = 0.6
 one_shot = true
 
+[node name="StopDelay" type="Timer" parent="StateMachine/Protest"]
+
 [node name="Leave" type="Node" parent="StateMachine"]
 
 [node name="Join" type="Node" parent="StateMachine"]
@@ -93,25 +117,42 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.245064, 0 )
 collision_layer = 2
 
 [node name="CollisionShape" type="CollisionShape" parent="PlayerNoticeRadius"]
-shape = SubResource( 4 )
+shape = SubResource( 5 )
 disabled = true
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="InputChainTask" type="Control" parent="CanvasLayer"]
-margin_right = 40.0
-margin_bottom = 40.0
+margin_left = -91.8662
+margin_top = -122.006
+margin_right = 88.1338
+margin_bottom = -47.0061
+rect_min_size = Vector2( 180, 75 )
+rect_pivot_offset = Vector2( 91.1269, 40.4643 )
 script = ExtResource( 8 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/InputChainTask"]
-margin_left = -45.5569
-margin_top = -8.4757
-margin_right = 44.4431
-margin_bottom = 7.5243
-rect_min_size = Vector2( 90, 0 )
+[node name="ColorRect" type="TextureRect" parent="CanvasLayer/InputChainTask"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 0.594604
+margin_right = 0.594604
+rect_pivot_offset = Vector2( 91.2394, 35.5145 )
+texture = ExtResource( 11 )
+expand = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/InputChainTask/ColorRect"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = 15.0
+margin_bottom = -20.0
+rect_min_size = Vector2( 90, 40 )
+rect_pivot_offset = Vector2( 91.2394, 20.5145 )
 alignment = 1
 __meta__ = {
 "_edit_use_anchors_": false
@@ -120,7 +161,16 @@ __meta__ = {
 [node name="Tween" type="Tween" parent="CanvasLayer/InputChainTask"]
 
 [node name="BoidDebug" type="Node2D" parent="CanvasLayer"]
+visible = false
 script = ExtResource( 9 )
+
+[node name="Sprite3D2" type="Sprite3D" parent="."]
+transform = Transform( 0.8, 0, 0, 0, 0.565685, 0.565685, 0, -0.565685, 0.565685, 0, 0.133544, -0.0789271 )
+texture = ExtResource( 10 )
+vframes = 2
+hframes = 8
+frame = 10
 [connection signal="timeout" from="StateMachine/Protest/TurnDelay" to="StateMachine/Protest" method="_on_TurnDelay_timeout"]
+[connection signal="timeout" from="StateMachine/Protest/StopDelay" to="StateMachine/Protest" method="_on_StopDelay_timeout"]
 [connection signal="body_entered" from="PlayerNoticeRadius" to="StateMachine/Idle" method="_on_PlayerNoticeRadius_body_entered"]
 [connection signal="body_exited" from="PlayerNoticeRadius" to="StateMachine/Join" method="_on_PlayerNoticeRadius_body_exited"]

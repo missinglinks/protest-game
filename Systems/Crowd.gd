@@ -4,7 +4,7 @@ var size = 0
 signal protest_size_changed
 
 var spirit: float = 50
-var spirit_step = 10
+var spirit_step = 5
 
 onready var task_timer: Timer = $TaskTimer
 
@@ -39,10 +39,10 @@ func _on_TaskTimer_timeout():
 	
 	
 func _on_task_completed() -> void:
-	spirit += spirit_step
+	spirit = clamp(spirit + spirit_step, 0, 100)
 	emit_signal("spirit_changed", spirit)
 	
 	
 func _on_task_failed() -> void:
-	spirit -= spirit_step
+	spirit = clamp(spirit - spirit_step, 0, 100)
 	emit_signal("spirit_changed", spirit)

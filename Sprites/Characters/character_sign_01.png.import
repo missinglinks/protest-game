@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/park-1.png-3a994e5c3d66ace8dd768b05946c3518.stex"
+path="res://.import/character_sign_01.png-3507c954033f7a36cf04f0f728131f15.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/Street/park-1.png"
-dest_files=[ "res://.import/park-1.png-3a994e5c3d66ace8dd768b05946c3518.stex" ]
+source_file="res://Sprites/Characters/character_sign_01.png"
+dest_files=[ "res://.import/character_sign_01.png-3507c954033f7a36cf04f0f728131f15.stex" ]
 
 [params]
 
@@ -18,9 +18,9 @@ compress/mode=0
 compress/lossy_quality=0.7
 compress/hdr_mode=0
 compress/bptc_ldr=0
-compress/normal_map=2
+compress/normal_map=0
 flags/repeat=0
-flags/filter=true
+flags/filter=false
 flags/mipmaps=false
 flags/anisotropic=false
 flags/srgb=1

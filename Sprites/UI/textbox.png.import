@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/park-1.png-3a994e5c3d66ace8dd768b05946c3518.stex"
+path="res://.import/textbox.png-b99d8f4ad2da91fb1b2112d80799bfe6.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/Street/park-1.png"
-dest_files=[ "res://.import/park-1.png-3a994e5c3d66ace8dd768b05946c3518.stex" ]
+source_file="res://Sprites/UI/textbox.png"
+dest_files=[ "res://.import/textbox.png-b99d8f4ad2da91fb1b2112d80799bfe6.stex" ]
 
 [params]
 
@@ -18,13 +18,13 @@ compress/mode=0
 compress/lossy_quality=0.7
 compress/hdr_mode=0
 compress/bptc_ldr=0
-compress/normal_map=2
+compress/normal_map=0
 flags/repeat=0
-flags/filter=true
+flags/filter=false
 flags/mipmaps=false
 flags/anisotropic=false
-flags/srgb=1
-process/fix_alpha_border=true
+flags/srgb=0
+process/fix_alpha_border=false
 process/premult_alpha=false
 process/HDR_as_SRGB=false
 process/invert_color=false

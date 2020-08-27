@@ -13,14 +13,14 @@ func setup(crowd) -> void:
 	crowd.connect("spirit_changed", self, "_on_spirit_changed")
 
 func _process(delta: float) -> void:
-	print(delta)
+	#print(delta)
 	if current_spirit < bar.value:
-		bar.value = clamp(bar.value - delta * 50, current_spirit, 100.0)
+		bar.value = clamp(bar.value - delta * 30, current_spirit, 100.0)
 	elif current_spirit > bar.value:
 		#bar.value = current_spirit
-		bar.value = clamp(bar.value + delta * 50, 0.0, current_spirit)
-	print(current_spirit)
-	print(bar.value)
+		bar.value = clamp(bar.value + delta * 30, 0.0, current_spirit)
+	#print(current_spirit)
+	#print(bar.value)
 
 
 func _on_spirit_changed(spirit: float) -> void:

@@ -10,16 +10,12 @@ onready var sprite = host.get_node("Sprite3D")
 
 
 func _ready() -> void:
-	pass
+	play("Idle")
 	
 func update_animation():
 	
-	#if host.velocity.x < 0 and !sprite.flip_h and current_animation == "Run":
-	#	sprite.flip_h = true
-	#elif host.velocity.x > 0 and sprite.flip_h and current_animation == "Run":
-	#	sprite.flip_h = false
-		
-	if host.velocity.length() >= 0.05 and current_animation != "Run":
-		play("Run")
-	elif host.velocity.length() < 0.05 and current_animation != "Idle":
-		play("Idle")
+	if host.fsm.state == host.fsm.states.Protest:
+		if host.velocity.length() >= 0.05 and current_animation != "Run":
+			play("Run")
+		elif host.velocity.length() < 0.05 and current_animation != "ProtestIdle":
+			play("ProtestIdle")

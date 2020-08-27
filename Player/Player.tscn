@@ -52,7 +52,7 @@ hframes = 5
 frame = 4
 
 [node name="Camera" type="Camera" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4.74066 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3.94076 )
 size = 5.0
 
 [node name="CollisionShape" type="CollisionShape" parent="."]

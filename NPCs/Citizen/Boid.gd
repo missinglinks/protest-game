@@ -21,7 +21,7 @@ var current_task: Node = null
 
 var joined_protest: bool
 
-onready var sprite = $Sprite3D
+onready var sprite = $Sprite3D2
 onready var fsm = $StateMachine
 onready var animation_player = $AnimationPlayer
 onready var task_ui = $CanvasLayer/InputChainTask
@@ -33,11 +33,13 @@ func _ready() -> void:
 	add_to_group("Boids")
 	
 	#randomize color modulate 
-	get_node("Sprite3D").modulate = Color(rand_range(0.5, 1.5), rand_range(0.5,1.5), rand_range(0.5, 1.5), 1)
+	sprite.modulate = Color(rand_range(0.5, 1.5), rand_range(0.5,1.5), rand_range(0.5, 1.5), 1)
 
+	if randf() < 0.5:
+		sprite.flip_h = true
 
 func setup() -> void:
-	pass
+	$CanvasLayer/InputChainTask.setup()
 
 func join_protest() -> void:
 	fsm.transition_to(fsm.states.Protest)

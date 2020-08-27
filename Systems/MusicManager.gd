@@ -37,6 +37,7 @@ signal mistimed_input
 
 func _ready() -> void:
 	state = WAIT
+	Refs.beat_manager = self
 	
 func start() -> void:
 	player.play(offset)

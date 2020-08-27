@@ -19,6 +19,9 @@ func _ready():
 func setup(input_type: int) -> void:
 	texture = textures[input_type]
 
+func emit_particles() -> void:
+	$CPUParticles2D.emitting = true
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass

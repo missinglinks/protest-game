@@ -7,6 +7,7 @@ extends State
 
 onready var player: Player = Refs.player
 onready var turn_delay_timer: Timer = $TurnDelay
+onready var stop_delay_timer: Timer = $StopDelay
 
 var speed: float = rand_range(0.3, 0.6)
 var acceleration: Vector3 = Vector3.ZERO
@@ -25,7 +26,7 @@ var acceleration_force: float = 50
 var target_position: Vector3 = Vector3.ZERO
 
 var can_turn: bool = true
-
+var stop: bool =false
 
 
 func enter() -> void:
@@ -52,44 +53,51 @@ func physics_update(delta: float) -> State:
 	
 	
 	#stop if all neighbours have stopped or are close to stopping
-	if neighbours.size() > 0 and player.velocity == Vector3.ZERO:
+	if neighbours.size() > 0 and player.velocity == Vector3.ZERO and stop_delay_timer.time_left == 0:
+		stop_delay_timer.wait_time = rand_range(0.5, 1.5)
+		stop_delay_timer.start()
+	elif neighbours.size() > 0 and player.velocity == Vector3.ZERO and stop:
 		var vec = Vector3.ZERO
 		for boid in neighbours:
 			vec += boid.velocity
 		vec /= neighbours.size()
 		if vec.length() < 0.3:
 			host.velocity = Vector3.ZERO
-			
+	
 			host.animation_player.update_animation()
-			return null
+			#return null
+	else:
 	
-	
-	#babsic boid behaviour
-	acceleration += calculate_alignment(neighbours) * alignment_force
-	acceleration += calculate_cohesion(neighbours) * cohesion_force
-	acceleration += calculate_seperation(neighbours) * seperation_force * neighbours.size() 
-	
-	#follow target
-	if player.velocity != Vector3.ZERO:
-		acceleration += calculate_following(target_position) * following_force
-	
-	var current_x = host.velocity.x
-	
-	#var target_vel = host.velocity + acceleration * acceleration_force
-	#host.velocity.slerp(target_vel, 0.1)
-	
-	if host.velocity.length() < speed:
-		host.velocity += acceleration * 3 #acceleration_force
-	host.velocity.y = 0
-
+		#basic boid behaviour
+		acceleration += calculate_alignment(neighbours) * alignment_force
+		acceleration += calculate_cohesion(neighbours) * cohesion_force
+		acceleration += calculate_seperation(neighbours) * seperation_force * neighbours.size() 
 		
-	host.velocity = host.move_and_slide(host.velocity, Vector3.UP)
-	host.velocity *= 0.3
-	acceleration *= 0.9
+		#follow target
+		if player.velocity != Vector3.ZERO:
+			acceleration += calculate_following(target_position) * following_force
+		
+		var current_x = host.velocity.x
+		
+		#var target_vel = host.velocity + acceleration * acceleration_force
+		#host.velocity.slerp(target_vel, 0.1)
+		
+		if host.velocity.length() < speed:
+			host.velocity += acceleration * 3 #acceleration_force
+		host.velocity.y = 0
+		
+		if host.velocity.length() < 0.3:
+			host.velocity *= 1.3
 	
-	#host.global_transform.origin.y = 8
-
-	host.animation_player.update_animation()
+			
+		host.velocity = host.move_and_slide(host.velocity, Vector3.UP)
+		host.velocity *= 0.3
+		acceleration *= 0.9
+		
+		#host.global_transform.origin.y = 8
+		stop = false
+	
+		host.animation_player.update_animation()
 	return null
 
 func calculate_seperation(neighbours: Array) -> Vector3:
@@ -165,3 +173,7 @@ func steer(target: Vector3) -> Vector3:
 
 func _on_TurnDelay_timeout():
 	can_turn = true
+
+
+func _on_StopDelay_timeout():
+	stop = true
