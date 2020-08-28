@@ -34,16 +34,22 @@ signal beat_input_ended
 signal beat_input
 signal mistimed_input
 
+var time_begin
+var time_delay
 
 func _ready() -> void:
 	state = WAIT
 	Refs.beat_manager = self
 	
 func start() -> void:
-	player.play(offset)
+	#player.play(offset)
 	beat_count = 1
 	state = INPUT_OFF
 	time_elapsed = 0
+	
+	time_begin = OS.get_ticks_usec()
+	time_delay = AudioServer.get_time_to_next_mix() + AudioServer.get_output_latency()
+	player.play()
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("dance_up") or event.is_action_pressed("dance_down") or event.is_action_pressed("dance_left") or event.is_action_pressed("dance_right"):
@@ -68,7 +74,9 @@ func process_input_off(delta: float) -> void:
 
 
 func _process(delta: float) -> void:
-	time_elapsed = player.get_playback_position()
+	#time_elapsed = player.get_playback_position()
+	time_elapsed = (OS.get_ticks_usec() - time_begin) / 1000000.0
+	time_elapsed -= time_delay
 	
 	match state:
 		INPUT_ON: process_input_on(delta)

@@ -1,12 +1,12 @@
-[gd_scene load_steps=23 format=2]
+[gd_scene load_steps=45 format=2]
 
 [ext_resource path="res://Player/Player.tscn" type="PackedScene" id=1]
 [ext_resource path="res://City/Tree.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Sprites/Houses/House.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Systems/TaskManager.gd" type="Script" id=4]
-[ext_resource path="res://NPCs/Group.tscn" type="PackedScene" id=5]
+[ext_resource path="res://UI/StartMenu.gd" type="Script" id=5]
 [ext_resource path="res://Systems/MusicManager.gd" type="Script" id=6]
-[ext_resource path="res://Audio/100BPM house free.ogg" type="AudioStream" id=7]
+[ext_resource path="res://Audio/Among my animal friends (100 BPM).ogg" type="AudioStream" id=7]
 [ext_resource path="res://Sprites/UI/input_button.png" type="Texture" id=8]
 [ext_resource path="res://UI/BeatIndicatorUI.gd" type="Script" id=9]
 [ext_resource path="res://World.gd" type="Script" id=10]
@@ -21,19 +21,71 @@
 [ext_resource path="res://Sprites/UI/gray.png" type="Texture" id=19]
 [ext_resource path="res://UI/SpiritMeter.gd" type="Script" id=20]
 [ext_resource path="res://UI/TimeLeft.gd" type="Script" id=21]
+[ext_resource path="res://Systems/Goal.gd" type="Script" id=22]
+[ext_resource path="res://Systems/SpawnAreas.gd" type="Script" id=23]
+[ext_resource path="res://Systems/Bystanders.gd" type="Script" id=24]
+[ext_resource path="res://Font/UITitle.tres" type="DynamicFont" id=25]
+[ext_resource path="res://UI/Button.tscn" type="PackedScene" id=26]
+[ext_resource path="res://Font/UICredits.tres" type="DynamicFont" id=27]
+[ext_resource path="res://UI/ReturnMessage.gd" type="Script" id=28]
+[ext_resource path="res://UI/GoalIndicator.tscn" type="PackedScene" id=29]
+[ext_resource path="res://UI/Ending.tscn" type="PackedScene" id=30]
+[ext_resource path="res://Sprites/Objects/street_closed.png" type="Texture" id=31]
 
 [sub_resource type="Environment" id=1]
 background_mode = 3
 background_color = Color( 0.635294, 0.607843, 0.537255, 1 )
+fog_enabled = true
+fog_color = Color( 0.639216, 0.639216, 0.623529, 1 )
+fog_depth_end = 15.0
+fog_depth_curve = 1.07177
+auto_exposure_enabled = true
 dof_blur_far_enabled = true
 dof_blur_far_distance = 6.0
 dof_blur_far_transition = 6.0
+dof_blur_far_amount = 0.12
 dof_blur_far_quality = 2
 dof_blur_near_enabled = true
 dof_blur_near_distance = 3.0
 dof_blur_near_transition = 0.32
 dof_blur_near_amount = 0.15
 dof_blur_near_quality = 2
+
+[sub_resource type="BoxShape" id=2]
+extents = Vector3( 1.16003, 1, 4.0051 )
+
+[sub_resource type="BoxShape" id=3]
+extents = Vector3( 3.72694, 1, 5.33575 )
+
+[sub_resource type="BoxShape" id=4]
+extents = Vector3( 19.4195, 1, 0.597871 )
+
+[sub_resource type="BoxShape" id=5]
+extents = Vector3( 5.0443, 1, 0.597871 )
+
+[sub_resource type="BoxShape" id=6]
+extents = Vector3( 9.50245, 1, 0.597871 )
+
+[sub_resource type="BoxShape" id=7]
+extents = Vector3( 0.998524, 1, 11.3073 )
+
+[sub_resource type="BoxShape" id=8]
+extents = Vector3( 4.74591, 1, 1.77571 )
+
+[sub_resource type="BoxShape" id=9]
+extents = Vector3( 1.72828, 1, 1.77571 )
+
+[sub_resource type="BoxShape" id=10]
+extents = Vector3( 2.73415, 1, 1.77571 )
+
+[sub_resource type="BoxShape" id=11]
+extents = Vector3( 1.95581, 1, 1.6594 )
+
+[sub_resource type="BoxShape" id=12]
+extents = Vector3( 6.47611, 1, 30.312 )
+
+[sub_resource type="BoxShape" id=13]
+extents = Vector3( 37.7085, 1, 5.90323 )
 
 [node name="World" type="Spatial"]
 script = ExtResource( 10 )
@@ -53,6 +105,168 @@ transform = Transform( 0.703792, -0.443073, 0.555305, 0, 0.781673, 0.623689, -0.
 light_energy = 1.16
 shadow_enabled = true
 shadow_bias = 0.01
+
+[node name="BeatManager" type="Spatial" parent="."]
+script = ExtResource( 6 )
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="BeatManager"]
+stream = ExtResource( 7 )
+volume_db = -10.097
+
+[node name="Crowd" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0147533, 0.0740387, 0.647541 )
+script = ExtResource( 13 )
+
+[node name="TaskTimer" type="Timer" parent="Crowd"]
+wait_time = 5.0
+one_shot = true
+autostart = true
+
+[node name="Bystanders" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0808756, 0.852619 )
+script = ExtResource( 24 )
+
+[node name="SpawnAreas" type="Spatial" parent="Bystanders"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0808756, -0.852619 )
+script = ExtResource( 23 )
+
+[node name="Area" type="Area" parent="Bystanders/SpawnAreas"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -3.68846, 0, 3.78743 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Bystanders/SpawnAreas/Area"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.43006, 0, 0.713354 )
+shape = SubResource( 2 )
+
+[node name="Area2" type="Area" parent="Bystanders/SpawnAreas"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 6.00495, 0, 3.78743 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Bystanders/SpawnAreas/Area2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.11235, 0, 0.455122 )
+shape = SubResource( 2 )
+
+[node name="Area9" type="Area" parent="Bystanders/SpawnAreas"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 21.2389, 0, -3.4599 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Bystanders/SpawnAreas/Area9"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.15774, 0, 2.08907 )
+shape = SubResource( 3 )
+
+[node name="Area3" type="Area" parent="Bystanders/SpawnAreas"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 6.00495, 0, 11.533 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Bystanders/SpawnAreas/Area3"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.26981, 0, 1.61008 )
+shape = SubResource( 4 )
+
+[node name="Area4" type="Area" parent="Bystanders/SpawnAreas"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 6.00495, 0, 15.5726 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Bystanders/SpawnAreas/Area4"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.26981, 0, 1.61008 )
+shape = SubResource( 4 )
+
+[node name="Area5" type="Area" parent="Bystanders/SpawnAreas"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 6.00495, 0, 8.37692 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Bystanders/SpawnAreas/Area5"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.48157, 0, 0.710099 )
+shape = SubResource( 4 )
+
+[node name="Area6" type="Area" parent="Bystanders/SpawnAreas"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 6.00495, 0, 0.935267 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Bystanders/SpawnAreas/Area6"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -17.3679, 0, 0.167472 )
+shape = SubResource( 5 )
+
+[node name="Area14" type="Area" parent="Bystanders/SpawnAreas"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 6.00495, 0, 4.90577 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Bystanders/SpawnAreas/Area14"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -17.3679, 0, 0.167472 )
+shape = SubResource( 5 )
+
+[node name="Area15" type="Area" parent="Bystanders/SpawnAreas"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 6.00495, 0, 4.90577 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Bystanders/SpawnAreas/Area15"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5.23754, 0, -3.96185 )
+shape = SubResource( 5 )
+
+[node name="Area7" type="Area" parent="Bystanders/SpawnAreas"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 6.00495, 0, -3.91849 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Bystanders/SpawnAreas/Area7"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.55583, 0, 0.837831 )
+shape = SubResource( 4 )
+
+[node name="Area16" type="Area" parent="Bystanders/SpawnAreas"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 6.00495, 0, -3.91849 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Bystanders/SpawnAreas/Area16"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 10.0968, 0, 8.9906 )
+shape = SubResource( 6 )
+
+[node name="Area8" type="Area" parent="Bystanders/SpawnAreas"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 6.00495, 0, -3.91849 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Bystanders/SpawnAreas/Area8"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.964396, 0, 8.58691 )
+shape = SubResource( 7 )
+
+[node name="Area10" type="Area" parent="Bystanders/SpawnAreas"]
+
+[node name="CollisionShape" type="CollisionShape" parent="Bystanders/SpawnAreas/Area10"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -7.03636, 0, 6.03005 )
+shape = SubResource( 7 )
+
+[node name="Area11" type="Area" parent="Bystanders/SpawnAreas"]
+
+[node name="CollisionShape" type="CollisionShape" parent="Bystanders/SpawnAreas/Area11"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -14.9911, 0, 5.25846 )
+shape = SubResource( 7 )
+
+[node name="Area12" type="Area" parent="Bystanders/SpawnAreas"]
+
+[node name="CollisionShape" type="CollisionShape" parent="Bystanders/SpawnAreas/Area12"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 15.3018, 0, 5.57617 )
+shape = SubResource( 7 )
+
+[node name="Area13" type="Area" parent="Bystanders/SpawnAreas"]
+
+[node name="CollisionShape" type="CollisionShape" parent="Bystanders/SpawnAreas/Area13"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 25.1449, 0, 4.94075 )
+shape = SubResource( 7 )
+
+[node name="Area17" type="Area" parent="Bystanders/SpawnAreas"]
+
+[node name="CollisionShape" type="CollisionShape" parent="Bystanders/SpawnAreas/Area17"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 20.1287, 0, 14.9603 )
+shape = SubResource( 8 )
+
+[node name="Area18" type="Area" parent="Bystanders/SpawnAreas"]
+
+[node name="CollisionShape" type="CollisionShape" parent="Bystanders/SpawnAreas/Area18"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -3.95939, 0, 14.9603 )
+shape = SubResource( 9 )
+
+[node name="Area20" type="Area" parent="Bystanders/SpawnAreas"]
+
+[node name="CollisionShape" type="CollisionShape" parent="Bystanders/SpawnAreas/Area20"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 23.5699, 0, 7.44265 )
+shape = SubResource( 9 )
+
+[node name="Area21" type="Area" parent="Bystanders/SpawnAreas"]
+
+[node name="CollisionShape" type="CollisionShape" parent="Bystanders/SpawnAreas/Area21"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -13.295, 0, 3.30539 )
+shape = SubResource( 9 )
+
+[node name="Area19" type="Area" parent="Bystanders/SpawnAreas"]
+
+[node name="CollisionShape" type="CollisionShape" parent="Bystanders/SpawnAreas/Area19"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 14.6229, 0, 7.12501 )
+shape = SubResource( 10 )
 
 [node name="Trees" type="Spatial" parent="."]
 
@@ -110,6 +324,39 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 8.23686, 0, 6.52027 )
 [node name="Tree5" parent="Trees" instance=ExtResource( 2 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.46468, 0.0205908, 0.59522 )
 
+[node name="Tree22" parent="Trees" instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 18.8971, 0.0205908, 0.59522 )
+
+[node name="Tree23" parent="Trees" instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 16.7045, 0.0205908, -3.00576 )
+
+[node name="Tree24" parent="Trees" instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 16.7045, 0.0205908, 3.01564 )
+
+[node name="Tree25" parent="Trees" instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 20.9423, 0.0205908, 3.01564 )
+
+[node name="Tree26" parent="Trees" instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 21.3506, 0.0205908, -4.70755 )
+
+[node name="Tree27" parent="Trees" instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 22.923, 0.0205908, -0.825638 )
+
+[node name="Tree28" parent="Trees" instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 22.923, 0.0205908, 6.8715 )
+
+[node name="Tree29" parent="Trees" instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 21.2278, 0.0205908, 15.3414 )
+
+[node name="Tree32" parent="Trees" instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 16.7045, 0.0205908, 19.2985 )
+
+[node name="Tree30" parent="Trees" instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 26.3388, 0.0205908, 15.3498 )
+
+[node name="Tree31" parent="Trees" instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 26.3388, 0.0205908, 3.00381 )
+
 [node name="Tree20" parent="Trees" instance=ExtResource( 2 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 11.9166, 9.53674e-07, 7.51476 )
 
@@ -118,15 +365,6 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 13.6733, 0, 6.46443 )
 
 [node name="Tree6" parent="Trees" instance=ExtResource( 2 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.0584, 0, -1.61051 )
-
-[node name="Crowd" type="Spatial" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0147533, 0.0740387, 0.647541 )
-script = ExtResource( 13 )
-
-[node name="TaskTimer" type="Timer" parent="Crowd"]
-wait_time = 5.0
-one_shot = true
-autostart = true
 
 [node name="Houses" type="Spatial" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0536704, -0.315549 )
@@ -233,64 +471,580 @@ transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 1
 [node name="House8" parent="Houses" instance=ExtResource( 3 )]
 transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -2.11276, 0.495138, -3.21453 )
 
-[node name="Bystanders" type="Spatial" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0808756, 0.852619 )
+[node name="Block" type="Spatial" parent="Houses"]
 
-[node name="Group" parent="Bystanders" instance=ExtResource( 5 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.93664, 0, 1.42117 )
+[node name="House35" parent="Houses/Block" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -17.4583, 0.495, -3.24973 )
 
-[node name="Group2" parent="Bystanders" instance=ExtResource( 5 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.24674, 0, 2.55784 )
-boids_n = 2
+[node name="House36" parent="Houses/Block" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -20.5727, 0.495, -3.24973 )
 
-[node name="Group3" parent="Bystanders" instance=ExtResource( 5 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -5.52051, 0, 4.11341 )
-boids_n = 2
+[node name="House37" parent="Houses/Block" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -23.4063, 0.495, -3.24973 )
 
-[node name="Group8" parent="Bystanders" instance=ExtResource( 5 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -8.04817, 0, -0.222184 )
-boids_n = 2
+[node name="House38" parent="Houses/Block" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
 
-[node name="Group9" parent="Bystanders" instance=ExtResource( 5 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -8.04817, 0, 9.40651 )
-boids_n = 3
+[node name="House39" parent="Houses/Block" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
 
-[node name="Group10" parent="Bystanders" instance=ExtResource( 5 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.2457, 0, 14.137 )
-boids_n = 5
-task_size = 6
+[node name="Block15" type="Spatial" parent="Houses"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.224 )
 
-[node name="Group4" parent="Bystanders" instance=ExtResource( 5 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.25042, 0, 5.37397 )
+[node name="House35" parent="Houses/Block15" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -17.4583, 0.495, -3.24973 )
 
-[node name="Group11" parent="Bystanders" instance=ExtResource( 5 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4.01088, 0, 9.1324 )
-boids_n = 2
+[node name="House36" parent="Houses/Block15" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -20.5727, 0.495, -3.24973 )
 
-[node name="Group12" parent="Bystanders" instance=ExtResource( 5 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5.88464, 0, -2.16118 )
-boids_n = 2
+[node name="House37" parent="Houses/Block15" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -23.4063, 0.495, -3.24973 )
 
-[node name="Group5" parent="Bystanders" instance=ExtResource( 5 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5.73999, 0, 6.55896 )
-boids_n = 2
+[node name="House38" parent="Houses/Block15" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
 
-[node name="Group6" parent="Bystanders" instance=ExtResource( 5 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.79121, 0, 6.55896 )
-boids_n = 4
-task_size = 6
+[node name="House39" parent="Houses/Block15" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
 
-[node name="Group7" parent="Bystanders" instance=ExtResource( 5 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -11.7502, 0, 4.42614 )
-boids_n = 4
-task_size = 6
+[node name="Block2" type="Spatial" parent="Houses"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0401344, 0.0130968, 4.03337 )
 
-[node name="BeatManager" type="Spatial" parent="."]
-script = ExtResource( 6 )
+[node name="House35" parent="Houses/Block2" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -17.4583, 0.495, -3.24973 )
 
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="BeatManager"]
-stream = ExtResource( 7 )
-volume_db = -10.097
+[node name="House36" parent="Houses/Block2" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -20.5727, 0.495, -3.24973 )
+
+[node name="House37" parent="Houses/Block2" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -23.4063, 0.495, -3.24973 )
+
+[node name="House38" parent="Houses/Block2" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="House39" parent="Houses/Block2" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="Block3" type="Spatial" parent="Houses"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0401344, 0.0130968, 8.05451 )
+
+[node name="House35" parent="Houses/Block3" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -17.4583, 0.495, -3.24973 )
+
+[node name="House36" parent="Houses/Block3" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -20.5727, 0.495, -3.24973 )
+
+[node name="House37" parent="Houses/Block3" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -23.4063, 0.495, -3.24973 )
+
+[node name="House38" parent="Houses/Block3" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="House39" parent="Houses/Block3" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="Block4" type="Spatial" parent="Houses"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0401344, 0.0130968, 11.9037 )
+
+[node name="House35" parent="Houses/Block4" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -17.4583, 0.495, -3.24973 )
+
+[node name="House36" parent="Houses/Block4" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -20.5727, 0.495, -3.24973 )
+
+[node name="House37" parent="Houses/Block4" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -23.4063, 0.495, -3.24973 )
+
+[node name="House38" parent="Houses/Block4" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="House39" parent="Houses/Block4" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="Block5" type="Spatial" parent="Houses"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0401344, 0.0130968, 16.0372 )
+
+[node name="House35" parent="Houses/Block5" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -17.4583, 0.495, -3.24973 )
+
+[node name="House36" parent="Houses/Block5" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -20.5727, 0.495, -3.24973 )
+
+[node name="House37" parent="Houses/Block5" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -23.4063, 0.495, -3.24973 )
+
+[node name="House38" parent="Houses/Block5" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="House39" parent="Houses/Block5" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="Block6" type="Spatial" parent="Houses"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0401344, 0.0130968, 19.7808 )
+
+[node name="House35" parent="Houses/Block6" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -17.4583, 0.495, -3.24973 )
+
+[node name="House36" parent="Houses/Block6" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -20.5727, 0.495, -3.24973 )
+
+[node name="House37" parent="Houses/Block6" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -23.4063, 0.495, -3.24973 )
+
+[node name="House38" parent="Houses/Block6" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="House39" parent="Houses/Block6" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="Block7" type="Spatial" parent="Houses"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0401344, 0.0130968, 23.9494 )
+
+[node name="House35" parent="Houses/Block7" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -17.4583, 0.495, -3.24973 )
+
+[node name="House36" parent="Houses/Block7" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -20.5727, 0.495, -3.24973 )
+
+[node name="House37" parent="Houses/Block7" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -23.4063, 0.495, -3.24973 )
+
+[node name="House38" parent="Houses/Block7" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="House39" parent="Houses/Block7" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="Block8" type="Spatial" parent="Houses"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 12.8788, 0.0130968, 23.9494 )
+
+[node name="House35" parent="Houses/Block8" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -16.9696, 0.495, -3.24973 )
+
+[node name="House36" parent="Houses/Block8" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 6.94485, 0.495, -15.1544 )
+
+[node name="House37" parent="Houses/Block8" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -22.6025, 0.495, -3.24973 )
+
+[node name="House38" parent="Houses/Block8" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -24.9624, 0.560628, -3.10372 )
+
+[node name="House39" parent="Houses/Block8" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, 3.06011 )
+
+[node name="Block9" type="Spatial" parent="Houses"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 25.8518, 0.0130968, 23.9494 )
+
+[node name="House35" parent="Houses/Block9" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -16.1644, 0.495, -3.24973 )
+
+[node name="House36" parent="Houses/Block9" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -20.5727, 0.495, -3.24973 )
+
+[node name="House37" parent="Houses/Block9" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -23.4063, 0.495, -3.24973 )
+
+[node name="House38" parent="Houses/Block9" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -4.54443, 0.495, -11.0742 )
+
+[node name="House39" parent="Houses/Block9" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -29.385, 0.495, 4.02744 )
+
+[node name="Block10" type="Spatial" parent="Houses"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 39.2048, 0.0130968, 23.9494 )
+
+[node name="House35" parent="Houses/Block10" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -17.4583, 0.495, -3.24973 )
+
+[node name="House36" parent="Houses/Block10" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -20.5727, 0.495, -3.24973 )
+
+[node name="House37" parent="Houses/Block10" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -21.3377, 0.495, -11.0996 )
+
+[node name="House38" parent="Houses/Block10" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="House39" parent="Houses/Block10" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="Block11" type="Spatial" parent="Houses"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 39.2048, 0.0130968, -4.2654 )
+
+[node name="House35" parent="Houses/Block11" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -17.4583, 0.495, -3.24973 )
+
+[node name="House36" parent="Houses/Block11" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -20.5727, 0.495, -3.24973 )
+
+[node name="House37" parent="Houses/Block11" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -23.4063, 0.495, -3.24973 )
+
+[node name="House38" parent="Houses/Block11" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="House39" parent="Houses/Block11" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="Block12" type="Spatial" parent="Houses"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 26.398, 0.0130968, -4.2654 )
+
+[node name="House35" parent="Houses/Block12" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -17.4583, 0.495, -3.24973 )
+
+[node name="House36" parent="Houses/Block12" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -20.5727, 0.495, -3.24973 )
+
+[node name="House37" parent="Houses/Block12" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -23.4063, 0.495, -3.24973 )
+
+[node name="House38" parent="Houses/Block12" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="House39" parent="Houses/Block12" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="Block13" type="Spatial" parent="Houses"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 13.3079, 0.0130968, -4.2654 )
+
+[node name="House35" parent="Houses/Block13" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -17.4583, 0.495, -3.24973 )
+
+[node name="House36" parent="Houses/Block13" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -20.5727, 0.495, -3.24973 )
+
+[node name="House37" parent="Houses/Block13" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -23.4063, 0.495, -3.24973 )
+
+[node name="House38" parent="Houses/Block13" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="House39" parent="Houses/Block13" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="Block14" type="Spatial" parent="Houses"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.285734, 0.0130968, -4.2654 )
+
+[node name="House35" parent="Houses/Block14" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -17.4583, 0.495, -3.24973 )
+
+[node name="House36" parent="Houses/Block14" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -20.5727, 0.495, -3.24973 )
+
+[node name="House37" parent="Houses/Block14" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -23.4063, 0.495, -3.24973 )
+
+[node name="House38" parent="Houses/Block14" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="House39" parent="Houses/Block14" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="Block20" type="Spatial" parent="Houses"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 54.3733, 0, 1.81668 )
+
+[node name="House35" parent="Houses/Block20" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -17.4583, 0.495, -3.24973 )
+
+[node name="House36" parent="Houses/Block20" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -20.5727, 0.495, -3.24973 )
+
+[node name="House37" parent="Houses/Block20" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -23.4063, 0.495, -3.24973 )
+
+[node name="House38" parent="Houses/Block20" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="House39" parent="Houses/Block20" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="Block21" type="Spatial" parent="Houses"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 54.3733, 0, -0.17207 )
+
+[node name="House35" parent="Houses/Block21" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -17.4583, 0.495, -3.24973 )
+
+[node name="House36" parent="Houses/Block21" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -20.5727, 0.495, -3.24973 )
+
+[node name="House37" parent="Houses/Block21" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -23.4063, 0.495, -3.24973 )
+
+[node name="House38" parent="Houses/Block21" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="House39" parent="Houses/Block21" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="Block32" type="Spatial" parent="Houses"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 55.3064, 0, -8.59327 )
+
+[node name="House35" parent="Houses/Block32" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -17.4583, 0.495, -3.24973 )
+
+[node name="House36" parent="Houses/Block32" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -20.5727, 0.495, -3.24973 )
+
+[node name="House37" parent="Houses/Block32" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -23.4063, 0.495, -3.24973 )
+
+[node name="House38" parent="Houses/Block32" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="House39" parent="Houses/Block32" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="Block22" type="Spatial" parent="Houses"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 54.659, 0.0130968, -4.2654 )
+
+[node name="House35" parent="Houses/Block22" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -17.4583, 0.495, -3.24973 )
+
+[node name="House36" parent="Houses/Block22" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -20.5727, 0.495, -3.24973 )
+
+[node name="House37" parent="Houses/Block22" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -23.4063, 0.495, -3.24973 )
+
+[node name="House38" parent="Houses/Block22" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="House39" parent="Houses/Block22" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="Block23" type="Spatial" parent="Houses"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 54.6897, 0, 7.93429 )
+
+[node name="House35" parent="Houses/Block23" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -17.4583, 0.495, -3.24973 )
+
+[node name="House36" parent="Houses/Block23" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -20.5727, 0.495, -3.24973 )
+
+[node name="House37" parent="Houses/Block23" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -23.4063, 0.495, -3.24973 )
+
+[node name="House38" parent="Houses/Block23" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="House39" parent="Houses/Block23" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="Block24" type="Spatial" parent="Houses"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 54.3733, 0, -16.1145 )
+
+[node name="House35" parent="Houses/Block24" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -17.4583, 0.495, -3.24973 )
+
+[node name="House36" parent="Houses/Block24" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -20.5727, 0.495, -3.24973 )
+
+[node name="House37" parent="Houses/Block24" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -23.4063, 0.495, -3.24973 )
+
+[node name="House38" parent="Houses/Block24" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="House39" parent="Houses/Block24" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="Block25" type="Spatial" parent="Houses"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 54.659, 0.0130968, 5.8586 )
+
+[node name="House35" parent="Houses/Block25" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -17.4583, 0.495, -3.24973 )
+
+[node name="House36" parent="Houses/Block25" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -20.5727, 0.495, -3.24973 )
+
+[node name="House37" parent="Houses/Block25" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -23.4063, 0.495, -3.24973 )
+
+[node name="House38" parent="Houses/Block25" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="House39" parent="Houses/Block25" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="Block26" type="Spatial" parent="Houses"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 54.3733, 0, 15.988 )
+
+[node name="House35" parent="Houses/Block26" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -17.4583, 0.495, -3.24973 )
+
+[node name="House36" parent="Houses/Block26" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -20.5727, 0.495, -3.24973 )
+
+[node name="House37" parent="Houses/Block26" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -23.4063, 0.495, -3.24973 )
+
+[node name="House38" parent="Houses/Block26" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="House39" parent="Houses/Block26" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="Block27" type="Spatial" parent="Houses"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 54.3733, 0, -10.8357 )
+
+[node name="House35" parent="Houses/Block27" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -17.4583, 0.495, -3.24973 )
+
+[node name="House36" parent="Houses/Block27" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -20.5727, 0.495, -3.24973 )
+
+[node name="House37" parent="Houses/Block27" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -23.4063, 0.495, -3.24973 )
+
+[node name="House38" parent="Houses/Block27" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="House39" parent="Houses/Block27" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="Block28" type="Spatial" parent="Houses"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 54.659, 0.0130968, 11.5108 )
+
+[node name="House35" parent="Houses/Block28" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -17.4583, 0.495, -3.24973 )
+
+[node name="House36" parent="Houses/Block28" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -20.5727, 0.495, -3.24973 )
+
+[node name="House37" parent="Houses/Block28" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -23.4063, 0.495, -3.24973 )
+
+[node name="House38" parent="Houses/Block28" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="House39" parent="Houses/Block28" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="Block29" type="Spatial" parent="Houses"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 54.3733, 0, 24.0074 )
+
+[node name="House35" parent="Houses/Block29" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -17.4583, 0.495, -3.24973 )
+
+[node name="House36" parent="Houses/Block29" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -20.5727, 0.495, -3.24973 )
+
+[node name="House37" parent="Houses/Block29" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -23.4063, 0.495, -3.24973 )
+
+[node name="House38" parent="Houses/Block29" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="House39" parent="Houses/Block29" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="Block30" type="Spatial" parent="Houses"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 54.3733, 0, 28.5308 )
+
+[node name="House35" parent="Houses/Block30" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -17.4583, 0.495, -3.24973 )
+
+[node name="House36" parent="Houses/Block30" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -20.5727, 0.495, -3.24973 )
+
+[node name="House37" parent="Houses/Block30" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -23.4063, 0.495, -3.24973 )
+
+[node name="House38" parent="Houses/Block30" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="House39" parent="Houses/Block30" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="Block31" type="Spatial" parent="Houses"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 54.659, 0.0130968, 19.8422 )
+
+[node name="House35" parent="Houses/Block31" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -17.4583, 0.495, -3.24973 )
+
+[node name="House36" parent="Houses/Block31" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -20.5727, 0.495, -3.24973 )
+
+[node name="House37" parent="Houses/Block31" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -23.4063, 0.495, -3.24973 )
+
+[node name="House38" parent="Houses/Block31" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="House39" parent="Houses/Block31" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="Block16" type="Spatial" parent="Houses"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 39.2048, 0.0130968, -8.40308 )
+
+[node name="House35" parent="Houses/Block16" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -17.4583, 0.495, -3.24973 )
+
+[node name="House36" parent="Houses/Block16" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -20.5727, 0.495, -3.24973 )
+
+[node name="House37" parent="Houses/Block16" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -23.4063, 0.495, -3.24973 )
+
+[node name="House38" parent="Houses/Block16" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="House39" parent="Houses/Block16" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="Block17" type="Spatial" parent="Houses"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 26.398, 0.0130968, -8.40308 )
+
+[node name="House35" parent="Houses/Block17" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -17.4583, 0.495, -3.24973 )
+
+[node name="House36" parent="Houses/Block17" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -20.5727, 0.495, -3.24973 )
+
+[node name="House37" parent="Houses/Block17" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -23.4063, 0.495, -3.24973 )
+
+[node name="House38" parent="Houses/Block17" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="House39" parent="Houses/Block17" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="Block18" type="Spatial" parent="Houses"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 13.3079, 0.0130968, -8.40308 )
+
+[node name="House35" parent="Houses/Block18" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -17.4583, 0.495, -3.24973 )
+
+[node name="House36" parent="Houses/Block18" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -20.5727, 0.495, -3.24973 )
+
+[node name="House37" parent="Houses/Block18" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -23.4063, 0.495, -3.24973 )
+
+[node name="House38" parent="Houses/Block18" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="House39" parent="Houses/Block18" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="Block19" type="Spatial" parent="Houses"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.285734, 0.0130968, -8.40308 )
+
+[node name="House35" parent="Houses/Block19" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -17.4583, 0.495, -3.24973 )
+
+[node name="House36" parent="Houses/Block19" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -20.5727, 0.495, -3.24973 )
+
+[node name="House37" parent="Houses/Block19" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -23.4063, 0.495, -3.24973 )
+
+[node name="House38" parent="Houses/Block19" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
+
+[node name="House39" parent="Houses/Block19" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -26.7132, 0.495, -3.24973 )
 
 [node name="UILayer" type="CanvasLayer" parent="."]
 
@@ -446,11 +1200,126 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="StartMenu" type="Control" parent="UILayer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="StartMenuBG" type="ColorRect" parent="UILayer/StartMenu"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0.870588, 0.552941, 0.905882, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Title" type="Label" parent="UILayer/StartMenu"]
+margin_left = 184.0
+margin_top = 232.0
+margin_right = 1484.0
+margin_bottom = 385.0
+custom_fonts/font = ExtResource( 25 )
+custom_colors/font_color_shadow = Color( 0.0352941, 0.0235294, 0.435294, 1 )
+custom_constants/shadow_offset_x = 4
+custom_constants/shadow_offset_y = 4
+text = "There's a protest in town
+and nobody showed up"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Subtitle" type="Label" parent="UILayer/StartMenu"]
+margin_left = 184.0
+margin_top = 600.0
+margin_right = 1484.0
+margin_bottom = 753.0
+custom_fonts/font = ExtResource( 25 )
+custom_colors/font_color_shadow = Color( 0.129412, 0.133333, 0.333333, 1 )
+custom_constants/shadow_offset_x = 4
+custom_constants/shadow_offset_y = 4
+text = "We're gonna 
+change that!"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Tween" type="Tween" parent="UILayer/StartMenu"]
+
+[node name="Buttons" type="Control" parent="UILayer/StartMenu"]
+margin_left = 8.0
+margin_top = -136.0
+margin_right = 48.0
+margin_bottom = -96.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="StartButton" parent="UILayer/StartMenu/Buttons" instance=ExtResource( 26 )]
+margin_left = 1336.0
+margin_top = 680.0
+margin_right = 1736.0
+margin_bottom = 740.0
+
+[node name="ControlsButton" parent="UILayer/StartMenu/Buttons" instance=ExtResource( 26 )]
+margin_left = 1336.0
+margin_top = 776.0
+margin_right = 1736.0
+margin_bottom = 836.0
+text = "controls"
+
+[node name="ExitButton" parent="UILayer/StartMenu/Buttons" instance=ExtResource( 26 )]
+margin_left = 1336.0
+margin_top = 872.0
+margin_right = 1736.0
+margin_bottom = 932.0
+text = "exit"
+
+[node name="Credits" type="Label" parent="UILayer/StartMenu"]
+margin_left = 184.0
+margin_top = 912.0
+margin_right = 1524.0
+margin_bottom = 1023.0
+custom_fonts/font = ExtResource( 27 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "a game by fenchel (@fenchel_) and Marig (@DareLooks)
+
+Music: \"Among my animal friends\" by Snabish (CC-BY-3.0)
+https://opengameart.org/content/among-my-animal-friends-low-quality"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ReturnMessage" type="Control" parent="UILayer"]
+visible = false
+margin_right = 40.0
+margin_bottom = 40.0
+script = ExtResource( 28 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="UILayer/ReturnMessage"]
+margin_left = 304.0
+margin_top = 32.0
+margin_right = 1604.0
+margin_bottom = 107.0
+custom_fonts/font = ExtResource( 25 )
+custom_colors/font_color = Color( 0.92549, 1, 0.0431373, 1 )
+custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
+custom_constants/shadow_offset_x = 4
+custom_constants/shadow_offset_y = 4
+text = "Return to the town square!"
+
+[node name="Ending" parent="UILayer" instance=ExtResource( 30 )]
+
 [node name="GridMap" type="GridMap" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0 )
 mesh_library = ExtResource( 16 )
 data = {
-"cells": PoolIntArray( 0, 0, -1609957365, 1, 0, 655372, 2, 0, 655371, 3, 0, 537526286, 4, 0, 655373, 5, 0, 8, 6, 0, 8, 7, 0, 9, 8, 0, -1073741813, 9, 0, 11, 10, 0, 11, 11, 0, 11, 12, 0, 11, 13, 0, 11, 14, 0, 11, 65520, 0, 11, 65521, 0, 11, 65522, 0, 11, 65523, 0, 11, 65524, 0, 11, 65525, 0, 11, 65526, 0, 11, 65527, 0, 11, 65528, 0, 9, 65529, 0, 8, 65530, 0, 8, 65531, 0, 13, 65532, 0, 14, 65533, 0, 11, 65534, 0, 655372, 65535, 0, 655371, 0, 1, 655371, 1, 1, 655372, 2, 1, 11, 3, 1, 1441800, 4, 1, 11, 5, 1, 11, 6, 1, 11, 7, 1, 1441800, 8, 1, 655371, 9, 1, 11, 10, 1, 11, 11, 1, 11, 12, 1, 11, 13, 1, 11, 14, 1, 11, 65521, 1, -1610612725, 65522, 1, 11, 65523, 1, 11, 65524, 1, 11, 65525, 1, 11, 65526, 1, 11, 65527, 1, 11, 65528, 1, 1441800, 65529, 1, 655372, 65530, 1, 11, 65531, 1, 11, 65532, 1, 1441800, 65533, 1, 11, 65534, 1, 655372, 65535, 1, 655371, 0, 2, -1073086453, 1, 2, 655372, 2, 2, 11, 3, 2, 655374, 4, 2, 655373, 5, 2, 8, 6, 2, 8, 7, 2, 9, 8, 2, 11, 9, 2, 11, 10, 2, 11, 11, 2, 11, 12, 2, 11, 13, 2, 11, 14, 2, 11, 65521, 2, 11, 65522, 2, 11, 65523, 2, 11, 65524, 2, 11, 65525, 2, 11, 65526, 2, 11, 65527, 2, 11, 65528, 2, 1441801, 65529, 2, 8, 65530, 2, 8, 65531, 2, 13, 65532, 2, 14, 65533, 2, 11, 65534, 2, 655372, 65535, 2, 655371, 0, 3, 655371, 1, 3, 655372, 2, 3, 11, 3, 3, 1441800, 4, 3, 11, 5, 3, 11, 6, 3, -1073741812, 7, 3, 1441800, 8, 3, 11, 9, 3, 11, 10, 3, -1610612725, 11, 3, 11, 12, 3, 11, 13, 3, 11, 14, 3, 11, 65520, 3, 11, 65521, 3, 11, 65522, 3, 11, 65523, 3, 536870923, 65524, 3, 11, 65525, 3, 11, 65526, 3, 11, 65527, 3, 11, 65528, 3, 1441800, 65529, 3, 11, 65530, 3, 11, 65531, 3, 11, 65532, 3, 1441800, 65533, 3, 11, 65534, 3, 655372, 65535, 3, 655371, 0, 4, 8, 1, 4, 536870920, 2, 4, 8, 3, 4, 1441801, 4, 4, 8, 5, 4, 8, 6, 4, 536870920, 7, 4, 9, 8, 4, 536870923, 9, 4, -1610612725, 10, 4, 536870923, 11, 4, 536870923, 12, 4, 536870923, 13, 4, 11, 14, 4, 536870923, 65520, 4, 536870923, 65521, 4, 536870923, 65522, 4, 11, 65523, 4, 536870923, 65524, 4, 11, 65525, 4, 536870923, 65526, 4, 536870923, 65527, 4, -1610612725, 65528, 4, 9, 65529, 4, 536870920, 65530, 4, 536870920, 65531, 4, 536870920, 65532, 4, 1441801, 65533, 4, 8, 65534, 4, 536870920, 65535, 4, 537919502, 0, 5, 11, 1, 5, -1610612725, 2, 5, 536870923, 3, 5, 538312712, 4, 5, 11, 5, 5, -1610612725, 6, 5, 11, 7, 5, 1048584, 8, 5, 11, 9, 5, 11, 10, 5, -1610612725, 11, 5, 536870923, 12, 5, 536870923, 13, 5, -1610612725, 14, 5, 11, 65521, 5, -1610612725, 65522, 5, -1610612725, 65523, 5, 11, 65524, 5, 11, 65525, 5, 11, 65526, 5, 11, 65527, 5, -2147483637, 65528, 5, 1048584, 65529, 5, -1610612725, 65530, 5, 11, 65531, 5, 11, 65532, 5, -1609170936, 65533, 5, 11, 65534, 5, -1610612725, 65535, 5, 1048589, 0, 6, -1609957368, 1, 6, -1609957368, 2, 6, 655368, 3, 6, -1609170935, 4, 6, -1609957368, 5, 6, 655368, 6, 6, 655368, 7, 6, -1609170935, 8, 6, 11, 9, 6, 11, 10, 6, 11, 11, 6, 11, 12, 6, 11, 13, 6, 11, 14, 6, 11, 65522, 6, 11, 65523, 6, 11, 65524, 6, -1610612725, 65525, 6, 11, 65526, 6, 655371, 65527, 6, 655371, 65528, 6, 1441801, 65529, 6, 655368, 65530, 6, 655368, 65531, 6, 655368, 65532, 6, -1609170935, 65533, 6, 655368, 65534, 6, 655368, 65535, 6, 1441801, 0, 7, 11, 1, 7, 11, 2, 7, 11, 3, 7, 1048584, 4, 7, 11, 5, 7, -1610612725, 6, 7, 11, 7, 7, 1048584, 8, 7, 11, 9, 7, -1610612725, 10, 7, 11, 11, 7, 11, 12, 7, 11, 13, 7, 11, 14, 7, 11, 65521, 7, 536870923, 65522, 7, 11, 65523, 7, -1610612725, 65524, 7, 11, 65525, 7, -1610612725, 65526, 7, 11, 65527, 7, 655371, 65528, 7, -1609564152, 65529, 7, 11, 65530, 7, -1610612725, 65531, 7, 11, 65532, 7, 1048584, 65533, 7, 1048588, 65534, 7, 1048588, 65535, 7, 1048584, 0, 8, 655368, 1, 8, 655368, 2, 8, 655368, 3, 8, 1441801, 4, 8, -1609957368, 5, 8, -1609957368, 6, 8, 655368, 7, 8, 1441802, 8, 8, -1609170933, 9, 8, 11, 10, 8, -1610612725, 11, 8, 11, 12, 8, 11, 13, 8, 11, 14, 8, 11, 65521, 8, 11, 65522, 8, 11, 65523, 8, -1610612725, 65524, 8, 11, 65525, 8, 11, 65526, 8, 11, 65527, 8, 11, 65528, 8, 655370, 65529, 8, 655368, 65530, 8, 655368, 65531, 8, 655368, 65532, 8, 1441801, 65533, 8, 655368, 65534, 8, 655368, 65535, 8, 1441801, 0, 9, 11, 1, 9, 536870923, 2, 9, 11, 3, 9, 11, 4, 9, 11, 5, 9, -1610612725, 6, 9, 11, 7, 9, 11, 8, 9, 11, 9, 9, 11, 10, 9, 11, 11, 9, 11, 12, 9, 11, 13, 9, 11, 14, 9, -1610612725, 15, 9, 11, 65521, 9, 11, 65522, 9, 11, 65523, 9, 11, 65524, 9, 11, 65525, 9, 11, 65526, 9, 11, 65527, 9, 11, 65528, 9, 11, 65529, 9, 11, 65530, 9, 11, 65531, 9, 11, 65532, 9, 11, 65533, 9, 11, 65534, 9, 11, 65535, 9, 11, 0, 10, 11, 1, 10, 11, 2, 10, 11, 3, 10, -1610612725, 4, 10, 11, 5, 10, 11, 6, 10, 11, 7, 10, 11, 8, 10, 11, 9, 10, 11, 10, 10, 11, 11, 10, 11, 12, 10, 11, 13, 10, 11, 65521, 10, 11, 65522, 10, 11, 65523, 10, 11, 65524, 10, 11, 65525, 10, 11, 65526, 10, 11, 65527, 10, 11, 65528, 10, 11, 65529, 10, 11, 65530, 10, 11, 65531, 10, 11, 65532, 10, 11, 65533, 10, 11, 65534, 10, 11, 65535, 10, 11, 0, 11, 11, 1, 11, 11, 2, 11, 11, 3, 11, 11, 4, 11, 11, 5, 11, 11, 6, 11, 11, 7, 11, 11, 8, 11, 11, 9, 11, 11, 10, 11, 11, 11, 11, 11, 12, 11, 11, 13, 11, 11, 65520, 11, 11, 65521, 11, -1610612725, 65522, 11, 11, 65523, 11, 11, 65524, 11, -1610612725, 65525, 11, 11, 65526, 11, 11, 65527, 11, -1610612725, 65528, 11, -1610612725, 65529, 11, 11, 65530, 11, 11, 65531, 11, 11, 65532, 11, 11, 65533, 11, 11, 65534, 11, 11, 65535, 11, -1610612725, 65520, 12, 11, 65521, 12, 11, 65522, 12, 11, 65523, 12, 11, 65524, 12, 11, 65525, 12, -1610612725, 65526, 12, 11, 65527, 12, 11, 65528, 12, 11, 65529, 12, 11, 65530, 12, -1610612725, 65531, 12, 11, 65532, 12, 11, 0, 13, 11, 65521, 13, 11, 65522, 13, 11, 65523, 13, 11, 65524, 13, 11, 65525, 13, 11, 65526, 13, 11, 65527, 13, 11, 65528, 13, 11, 65529, 13, 11, 65530, 13, 11, 65531, 13, 11, 65532, 13, 11, 65533, 13, 11, 65534, 13, 11, 65535, 13, 11, 65528, 65517, 11, 65524, 65518, 11, 0, 65519, 11, 65523, 65519, 11, 65529, 65519, 11, 2, 65520, 11, 65525, 65520, 11, 65527, 65520, 11, 65530, 65520, 11, 65533, 65520, 11, 65535, 65520, 11, 65523, 65521, 11, 65525, 65521, 11, 65527, 65521, 11, 65528, 65521, 11, 65530, 65521, 11, 4, 65522, 11, 15, 65522, 11, 16, 65522, 11, 65525, 65522, 11, 65526, 65522, 11, 65527, 65522, 11, 65528, 65522, 11, 65532, 65522, 11, 5, 65523, 11, 6, 65523, 11, 7, 65523, 11, 9, 65523, 11, 10, 65523, 11, 11, 65523, 11, 12, 65523, 11, 16, 65523, 11, 65523, 65523, 11, 65525, 65523, 11, 65526, 65523, 11, 65527, 65523, 11, 65528, 65523, 11, 65529, 65523, 11, 65530, 65523, 11, 65531, 65523, 11, 65532, 65523, 536870923, 65534, 65523, -1610612725, 65535, 65523, 11, 0, 65524, 11, 1, 65524, 11, 2, 65524, 11, 3, 65524, -1073741813, 4, 65524, 11, 5, 65524, 11, 6, 65524, 11, 7, 65524, 11, 8, 65524, 11, 9, 65524, -1073741813, 10, 65524, 11, 12, 65524, -1073741813, 13, 65524, 11, 14, 65524, 11, 15, 65524, 11, 16, 65524, 11, 65523, 65524, 11, 65525, 65524, 11, 65526, 65524, 11, 65527, 65524, 11, 65528, 65524, 11, 65529, 65524, 11, 65530, 65524, 11, 65531, 65524, -1073741813, 65532, 65524, 11, 65533, 65524, 11, 65534, 65524, 11, 65535, 65524, -1073741813, 0, 65525, 11, 1, 65525, 11, 2, 65525, 11, 3, 65525, 11, 4, 65525, 11, 5, 65525, 11, 6, 65525, 11, 7, 65525, 11, 8, 65525, 11, 9, 65525, 11, 10, 65525, 11, 11, 65525, 11, 12, 65525, -1073741813, 13, 65525, -1073741813, 14, 65525, -1073741813, 15, 65525, 11, 16, 65525, 11, 65523, 65525, 11, 65524, 65525, 11, 65525, 65525, 11, 65526, 65525, 11, 65527, 65525, 11, 65528, 65525, 11, 65529, 65525, 11, 65530, 65525, 11, 65531, 65525, 11, 65532, 65525, 11, 65533, 65525, -1610612725, 65534, 65525, 11, 65535, 65525, 11, 0, 65526, 11, 1, 65526, 11, 2, 65526, 11, 3, 65526, 11, 4, 65526, -1610612725, 5, 65526, 11, 6, 65526, -1073741813, 7, 65526, -1073741813, 8, 65526, 11, 9, 65526, 11, 10, 65526, 11, 11, 65526, 11, 12, 65526, 11, 13, 65526, 11, 14, 65526, 11, 15, 65526, 11, 16, 65526, 11, 65523, 65526, -1610612725, 65524, 65526, -1610612725, 65525, 65526, 11, 65526, 65526, 11, 65527, 65526, 11, 65528, 65526, 11, 65529, 65526, 11, 65530, 65526, 11, 65531, 65526, 11, 65532, 65526, -1073741813, 65533, 65526, 11, 65534, 65526, 11, 65535, 65526, 11, 0, 65527, 11, 1, 65527, 11, 2, 65527, 11, 3, 65527, -1073741813, 4, 65527, -1073741813, 5, 65527, 11, 6, 65527, -1073741813, 7, 65527, 11, 8, 65527, 11, 9, 65527, 11, 10, 65527, 11, 11, 65527, 11, 12, 65527, 11, 13, 65527, 11, 14, 65527, 11, 15, 65527, 11, 16, 65527, 11, 65523, 65527, 11, 65524, 65527, 11, 65525, 65527, 11, 65526, 65527, 11, 65527, 65527, 11, 65528, 65527, 11, 65529, 65527, 11, 65530, 65527, 11, 65531, 65527, 11, 65532, 65527, 11, 65533, 65527, 11, 65534, 65527, 11, 65535, 65527, 11, 0, 65528, 11, 1, 65528, 11, 2, 65528, 11, 3, 65528, 11, 4, 65528, 11, 5, 65528, 11, 6, 65528, 11, 7, 65528, 11, 8, 65528, 11, 9, 65528, 11, 10, 65528, 11, 11, 65528, -1073741813, 12, 65528, 11, 13, 65528, 11, 14, 65528, 11, 15, 65528, 11, 16, 65528, 11, 65523, 65528, 11, 65524, 65528, 11, 65525, 65528, 11, 65526, 65528, 11, 65527, 65528, 11, 65528, 65528, 11, 65529, 65528, 11, 65530, 65528, 11, 65531, 65528, 11, 65532, 65528, 11, 65533, 65528, 11, 65534, 65528, 11, 65535, 65528, 11, 0, 65529, 11, 1, 65529, 11, 2, 65529, 11, 3, 65529, 11, 4, 65529, 11, 5, 65529, 11, 6, 65529, 11, 7, 65529, 11, 8, 65529, 11, 9, 65529, 11, 10, 65529, 11, 11, 65529, 11, 12, 65529, 11, 13, 65529, 11, 14, 65529, 11, 15, 65529, 11, 16, 65529, 11, 17, 65529, 11, 65521, 65529, 11, 65522, 65529, 11, 65523, 65529, 11, 65524, 65529, 11, 65525, 65529, 11, 65526, 65529, 11, 65527, 65529, 11, 65528, 65529, 11, 65529, 65529, 11, 65530, 65529, 11, 65531, 65529, 11, 65532, 65529, 11, 65533, 65529, 11, 65534, 65529, 11, 65535, 65529, 11, 0, 65530, 11, 1, 65530, 11, 2, 65530, 11, 3, 65530, 11, 4, 65530, 11, 5, 65530, 11, 6, 65530, 11, 7, 65530, 11, 8, 65530, 11, 9, 65530, 11, 10, 65530, 11, 11, 65530, 11, 12, 65530, 11, 13, 65530, 11, 14, 65530, 11, 15, 65530, 11, 16, 65530, 11, 17, 65530, 11, 65521, 65530, 11, 65522, 65530, 11, 65523, 65530, 11, 65524, 65530, 11, 65525, 65530, 11, 65526, 65530, 11, 65527, 65530, 11, 65528, 65530, 11, 65529, 65530, 11, 65530, 65530, 11, 65531, 65530, 11, 65532, 65530, 11, 65533, 65530, 655371, 65534, 65530, 11, 65535, 65530, 11, 0, 65531, 11, 1, 65531, 11, 2, 65531, 11, 3, 65531, 11, 4, 65531, 11, 5, 65531, 11, 6, 65531, 11, 7, 65531, 11, 8, 65531, 11, 9, 65531, 11, 10, 65531, 11, 11, 65531, 11, 12, 65531, 11, 13, 65531, 11, 14, 65531, 11, 15, 65531, 11, 16, 65531, 11, 65521, 65531, 11, 65522, 65531, 11, 65523, 65531, 11, 65524, 65531, 11, 65525, 65531, 11, 65526, 65531, 11, 65527, 65531, 11, 65528, 65531, 11, 65529, 65531, 655371, 65530, 65531, 655371, 65531, 65531, 655371, 65532, 65531, 655371, 65533, 65531, 655371, 65534, 65531, 11, 65535, 65531, 11, 0, 65532, 8, 1, 65532, 8, 2, 65532, 8, 3, 65532, 1048590, 4, 65532, 8, 5, 65532, 8, 6, 65532, 8, 7, 65532, 10, 8, 65532, 11, 9, 65532, 11, 10, 65532, 11, 11, 65532, 11, 12, 65532, 11, 13, 65532, 11, 14, 65532, 11, 15, 65532, 11, 16, 65532, 11, 65521, 65532, 11, 65522, 65532, 11, 65523, 65532, 11, 65524, 65532, 11, 65525, 65532, 11, 65526, 65532, 11, 65527, 65532, 11, 65528, 65532, 1048586, 65529, 65532, 8, 65530, 65532, 8, 65531, 65532, 8, 65532, 65532, 1048590, 65533, 65532, 8, 65534, 65532, 8, 65535, 65532, 1073741832, 0, 65533, 1048587, 1, 65533, 1048587, 2, 65533, 11, 3, 65533, 1048589, 4, 65533, 11, 5, 65533, 11, 6, 65533, 11, 7, 65533, 1441800, 8, 65533, 11, 9, 65533, 11, 10, 65533, 11, 11, 65533, 11, 12, 65533, 11, 13, 65533, 536870923, 14, 65533, 11, 15, 65533, 11, 16, 65533, 536870923, 65520, 65533, 11, 65521, 65533, 11, 65522, 65533, 11, 65523, 65533, 11, 65524, 65533, 11, 65525, 65533, 11, 65526, 65533, 11, 65527, 65533, 11, 65528, 65533, 1048584, 65529, 65533, 655371, 65530, 65533, 11, 65531, 65533, 11, 65532, 65533, 1048589, 65533, 65533, 11, 65534, 65533, 11, 65535, 65533, 11, 0, 65534, 537526280, 1, 65534, 655368, 2, 65534, 655368, 3, 65534, 655369, 4, 65534, 655368, 5, 65534, 8, 6, 65534, 8, 7, 65534, 9, 8, 65534, 11, 9, 65534, 11, 10, 65534, 11, 11, 65534, 11, 12, 65534, 11, 13, 65534, 11, 14, 65534, 11, 15, 65534, 11, 65520, 65534, 11, 65521, 65534, 536870923, 65522, 65534, 11, 65523, 65534, 11, 65524, 65534, 11, 65525, 65534, 11, 65526, 65534, 11, 65527, 65534, 11, 65528, 65534, 9, 65529, 65534, 8, 65530, 65534, 8, 65531, 65534, 655368, 65532, 65534, 655369, 65533, 65534, 655368, 65534, 65534, 655368, 65535, 65534, 655368, 0, 65535, 11, 1, 65535, 1073741835, 2, 65535, 655371, 3, 65535, 1441800, 4, 65535, 11, 5, 65535, 11, 6, 65535, 11, 7, 65535, 1441800, 8, 65535, 536870923, 9, 65535, 11, 10, 65535, 11, 11, 65535, 11, 12, 65535, 11, 13, 65535, 11, 14, 65535, 11, 15, 65535, 11, 65521, 65535, 11, 65522, 65535, 11, 65523, 65535, 11, 65524, 65535, 11, 65525, 65535, 11, 65526, 65535, 11, 65527, 65535, 1048587, 65528, 65535, 538312712, 65529, 65535, 11, 65530, 65535, 11, 65531, 65535, 11, 65532, 65535, 1441800, 65533, 65535, 11, 65534, 65535, 11, 65535, 65535, 11 )
+"cells": PoolIntArray( 0, 0, 655371, 1, 0, 655372, 2, 0, -1609957365, 3, 0, 655374, 4, 0, 655373, 5, 0, 8, 6, 0, 8, 7, 0, 14, 8, 0, 12, 9, 0, 12, 10, 0, 12, 11, 0, 12, 12, 0, 1441800, 13, 0, 11, 14, 0, 11, 15, 0, 11, 16, 0, 11, 17, 0, 11, 18, 0, 11, 19, 0, 11, 20, 0, 1441800, 21, 0, 1441804, 22, 0, 1441804, 65519, 0, -1073741813, 65520, 0, 655368, 65521, 0, 1441801, 65522, 0, 8, 65523, 0, 8, 65524, 0, 8, 65525, 0, 8, 65526, 0, 8, 65527, 0, 8, 65528, 0, 9, 65529, 0, 8, 65530, 0, 8, 65531, 0, 13, 65532, 0, -536870898, 65533, 0, 11, 65534, 0, 655372, 65535, 0, 655371, 0, 1, 655371, 1, 1, 655372, 2, 1, 1073741835, 3, 1, 1441800, 4, 1, 11, 5, 1, 11, 6, 1, -1073741813, 7, 1, 1441800, 8, 1, 12, 9, 1, 12, 10, 1, 12, 11, 1, 12, 12, 1, 1441800, 13, 1, 11, 14, 1, 11, 15, 1, 11, 16, 1, 11, 17, 1, 11, 18, 1, -1073741813, 19, 1, 11, 20, 1, 1075183624, 21, 1, 1441804, 22, 1, 1441804, 65519, 1, 11, 65520, 1, 655372, 65521, 1, 1441800, 65522, 1, 11, 65523, 1, 11, 65524, 1, 11, 65525, 1, 11, 65526, 1, -1073741813, 65527, 1, 11, 65528, 1, 1441800, 65529, 1, 655372, 65530, 1, 11, 65531, 1, 11, 65532, 1, 1441800, 65533, 1, 11, 65534, 1, 655372, 65535, 1, 655371, 0, 2, 655371, 1, 2, 655372, 2, 2, 11, 3, 2, 655374, 4, 2, 655373, 5, 2, 8, 6, 2, 8, 7, 2, 9, 8, 2, 8, 9, 2, 8, 10, 2, 8, 11, 2, 8, 12, 2, 9, 13, 2, 655368, 14, 2, -1073086456, 15, 2, 655368, 16, 2, 655368, 17, 2, 655368, 18, 2, 655368, 19, 2, 655368, 20, 2, 14, 21, 2, 1441804, 22, 2, 1441804, 65519, 2, 11, 65520, 2, 655368, 65521, 2, 1441801, 65522, 2, -1073741816, 65523, 2, 8, 65524, 2, 8, 65525, 2, 8, 65526, 2, 8, 65527, 2, 8, 65528, 2, 1441801, 65529, 2, 8, 65530, 2, 8, 65531, 2, 13, 65532, 2, 14, 65533, 2, 11, 65534, 2, -1073086452, 65535, 2, 655371, 0, 3, 655371, 1, 3, 655372, 2, 3, 11, 3, 3, 1441800, 4, 3, 11, 5, 3, 11, 6, 3, 12, 7, 3, 1441800, 8, 3, 1441804, 9, 3, 11, 10, 3, 11, 11, 3, 12, 12, 3, 1441800, 13, 3, 11, 14, 3, 11, 15, 3, 11, 16, 3, 11, 17, 3, 11, 18, 3, 11, 19, 3, 11, 20, 3, 1441800, 21, 3, 1441804, 22, 3, -1072300020, 65519, 3, 11, 65520, 3, 11, 65521, 3, 1441800, 65522, 3, 11, 65523, 3, 11, 65524, 3, 11, 65525, 3, 11, 65526, 3, 11, 65527, 3, 11, 65528, 3, 1441800, 65529, 3, 11, 65530, 3, -1073741813, 65531, 3, 11, 65532, 3, 1441800, 65533, 3, 11, 65534, 3, 655372, 65535, 3, 655371, 0, 4, 8, 1, 4, 8, 2, 4, 8, 3, 4, 1441801, 4, 4, 8, 5, 4, 8, 6, 4, -1073741816, 7, 4, 9, 8, 4, -1610612728, 9, 4, 8, 10, 4, 8, 11, 4, 8, 12, 4, 9, 13, 4, 655368, 14, 4, 655368, 15, 4, 655368, 16, 4, 655368, 17, 4, 655368, 18, 4, 655368, 19, 4, 655368, 20, 4, 655369, 21, 4, 655368, 22, 4, 655368, 65519, 4, 11, 65520, 4, 655368, 65521, 4, 1441801, 65522, 4, 536870920, 65523, 4, 8, 65524, 4, 8, 65525, 4, 8, 65526, 4, -1073741816, 65527, 4, 8, 65528, 4, 9, 65529, 4, 8, 65530, 4, 8, 65531, 4, 8, 65532, 4, 1441801, 65533, 4, 8, 65534, 4, 8, 65535, 4, 1048590, 0, 5, 11, 1, 5, 11, 2, 5, -1073741813, 3, 5, 1441800, 4, 5, 11, 5, 5, 11, 6, 5, 11, 7, 5, 1048584, 8, 5, 11, 9, 5, 11, 10, 5, 11, 11, 5, 11, 12, 5, 1441800, 13, 5, 11, 14, 5, -1073741813, 15, 5, 11, 16, 5, 11, 17, 5, 11, 18, 5, 11, 19, 5, 11, 20, 5, 1441800, 21, 5, 1441804, 22, 5, 1441804, 65519, 5, 11, 65520, 5, 655372, 65521, 5, 1441800, 65522, 5, 11, 65523, 5, 11, 65524, 5, 11, 65525, 5, 11, 65526, 5, 11, 65527, 5, 11, 65528, 5, 1048584, 65529, 5, 11, 65530, 5, -1610612725, 65531, 5, 11, 65532, 5, 1441800, 65533, 5, 11, 65534, 5, -1073741813, 65535, 5, 1048589, 0, 6, 655368, 1, 6, 655368, 2, 6, 655368, 3, 6, 1441801, 4, 6, 655368, 5, 6, 655368, 6, 6, 655368, 7, 6, 1441801, 8, 6, 8, 9, 6, 8, 10, 6, -1073741816, 11, 6, 8, 12, 6, 9, 13, 6, 655368, 14, 6, 655368, 15, 6, 655368, 16, 6, 655368, 17, 6, 655368, 18, 6, 655368, 19, 6, 655368, 20, 6, 14, 21, 6, 1441804, 22, 6, -1072300020, 65519, 6, 11, 65520, 6, 655368, 65521, 6, 1441801, 65522, 6, 8, 65523, 6, 8, 65524, 6, 8, 65525, 6, 8, 65526, 6, 8, 65527, 6, 8, 65528, 6, 1441801, 65529, 6, 655368, 65530, 6, 655368, 65531, 6, 655368, 65532, 6, 1441801, 65533, 6, 655368, 65534, 6, 655368, 65535, 6, 1441801, 0, 7, 11, 1, 7, 11, 2, 7, 11, 3, 7, 1048584, 4, 7, 11, 5, 7, 11, 6, 7, -1073741813, 7, 7, 1048584, 8, 7, 1441804, 9, 7, 12, 10, 7, 12, 11, 7, 1441804, 12, 7, 1441800, 13, 7, 11, 14, 7, 11, 15, 7, 11, 16, 7, 11, 17, 7, 11, 18, 7, -1073741813, 19, 7, 11, 20, 7, 1441800, 21, 7, 12, 22, 7, 12, 65518, 7, 11, 65519, 7, 11, 65520, 7, 11, 65521, 7, 1441800, 65522, 7, 11, 65523, 7, 11, 65524, 7, 11, 65525, 7, -1073741813, 65526, 7, 11, 65527, 7, 655371, 65528, 7, 1048584, 65529, 7, 11, 65530, 7, 11, 65531, 7, 11, 65532, 7, 1048584, 65533, 7, 1048588, 65534, 7, 1048588, 65535, 7, 1048584, 0, 8, -1073086456, 1, 8, 655368, 2, 8, 655368, 3, 8, 1441801, 4, 8, 655368, 5, 8, 655368, 6, 8, 655368, 7, 8, 9, 8, 8, 8, 9, 8, 8, 10, 8, 8, 11, 8, -1073741816, 12, 8, 9, 13, 8, 655368, 14, 8, 655368, 15, 8, 655368, 16, 8, 655368, 17, 8, 655368, 18, 8, 655368, 19, 8, 655368, 20, 8, 14, 21, 8, 12, 22, 8, 12, 65518, 8, 11, 65519, 8, 11, 65520, 8, 655368, 65521, 8, 655369, 65522, 8, 8, 65523, 8, 8, 65524, 8, 8, 65525, 8, 8, 65526, 8, 8, 65527, 8, -1073741816, 65528, 8, 655369, 65529, 8, 655368, 65530, 8, 655368, 65531, 8, 655368, 65532, 8, 1441801, 65533, 8, 655368, 65534, 8, 655368, 65535, 8, 1441801, 0, 9, 655371, 1, 9, 655371, 2, 9, 11, 3, 9, -1072693240, 4, 9, 11, 5, 9, 655371, 6, 9, 11, 7, 9, 1048584, 8, 9, 11, 9, 9, 11, 10, 9, 11, 11, 9, 11, 12, 9, 1441800, 13, 9, 11, 14, 9, 11, 15, 9, -1073741813, 16, 9, 11, 17, 9, 11, 18, 9, 11, 19, 9, 11, 20, 9, 1441800, 21, 9, 12, 22, 9, 12, 65518, 9, 11, 65519, 9, 11, 65520, 9, 11, 65521, 9, 1441800, 65522, 9, 11, 65523, 9, 11, 65524, 9, 11, 65525, 9, 11, 65526, 9, 11, 65527, 9, 11, 65528, 9, 1048584, 65529, 9, 11, 65530, 9, 11, 65531, 9, 11, 65532, 9, 1441800, 65533, 9, 11, 65534, 9, -1073741813, 65535, 9, 1048584, 0, 10, 8, 1, 10, 655368, 2, 10, 8, 3, 10, 1048585, 4, 10, 8, 5, 10, 8, 6, 10, -1610612728, 7, 10, 1048585, 8, 10, 8, 9, 10, 8, 10, 10, -1073741816, 11, 10, 8, 12, 10, 1441801, 13, 10, 655368, 14, 10, 655368, 15, 10, 655368, 16, 10, 655368, 17, 10, 655368, 18, 10, 655368, 19, 10, 655368, 20, 10, 655369, 65518, 10, 11, 65519, 10, -1073741813, 65520, 10, 11, 65521, 10, 537526281, 65522, 10, 8, 65523, 10, 8, 65524, 10, 8, 65525, 10, 8, 65526, 10, 8, 65527, 10, 8, 65528, 10, 1048585, 65529, 10, 8, 65530, 10, 8, 65531, 10, 8, 65532, 10, 1441801, 65533, 10, 8, 65534, 10, 8, 65535, 10, 1048585, 0, 11, 1441804, 1, 11, 1441804, 2, 11, 1441804, 3, 11, 1048584, 4, 11, 655372, 5, 11, 655372, 6, 11, 655372, 7, 11, -1072693240, 8, 11, 655372, 9, 11, 655372, 10, 11, 655372, 11, 11, 655372, 12, 11, 1048584, 13, 11, 11, 14, 11, 655371, 15, 11, -536215541, 16, 11, 655371, 17, 11, 655371, 18, 11, 11, 65519, 11, -1073741813, 65520, 11, 11, 65521, 11, 11, 65522, 11, 11, 65523, 11, 11, 65524, 11, 12, 65525, 11, 12, 65526, 11, 12, 65527, 11, 12, 65528, 11, 1441800, 65529, 11, 1048588, 65530, 11, 1048588, 65531, 11, -1072693236, 65532, 11, 1441800, 65533, 11, 537919500, 65534, 11, 1048588, 65535, 11, 1048584, 0, 12, 11, 1, 12, 11, 2, 12, 11, 3, 12, 11, 4, 12, 11, 5, 12, 11, 6, 12, 11, 7, 12, 11, 8, 12, 11, 9, 12, 11, 10, 12, 11, 11, 12, 11, 12, 12, 11, 13, 12, 11, 14, 12, 11, 15, 12, 11, 17, 12, 655371, 18, 12, 655371, 65519, 12, 11, 65520, 12, 11, 65521, 12, 11, 65522, 12, 11, 65523, 12, 11, 65524, 12, 11, 65525, 12, 11, 65526, 12, 11, 65527, 12, 11, 65528, 12, 11, 65529, 12, 11, 65530, 12, 11, 65531, 12, 11, 65532, 12, 11, 65533, 12, 11, 65534, 12, 11, 65535, 12, 11, 0, 13, 11, 1, 13, 11, 2, 13, 11, 3, 13, 11, 4, 13, 11, 5, 13, 11, 6, 13, 11, 7, 13, 11, 8, 13, 11, 9, 13, 11, 10, 13, 11, 11, 13, 11, 12, 13, 11, 65521, 13, 11, 65522, 13, 11, 65523, 13, 11, 65524, 13, 11, 65525, 13, 11, 65526, 13, 11, 65527, 13, 11, 65528, 13, 11, 65529, 13, 11, 65530, 13, 11, 65531, 13, 11, 65532, 13, 11, 65533, 13, 11, 65534, 13, 11, 65535, 13, 11, 0, 14, 11, 1, 14, 11, 2, 14, 11, 3, 14, 11, 4, 14, 11, 5, 14, 11, 6, 14, 11, 7, 14, 11, 8, 14, 11, 9, 14, 11, 10, 14, 11, 11, 14, 11, 65526, 14, 11, 65527, 14, 11, 65528, 14, 11, 65529, 14, 11, 65530, 14, 11, 65531, 14, 11, 65532, 14, 11, 65533, 14, 11, 65534, 14, 11, 65535, 14, 11, 65530, 15, 11, 65531, 15, 11, 65528, 65517, 11, 65524, 65518, 11, 0, 65519, 11, 65523, 65519, 11, 65529, 65519, 11, 2, 65520, 11, 65525, 65520, 11, 65527, 65520, 11, 65530, 65520, 11, 65533, 65520, 11, 65535, 65520, 11, 65523, 65521, 11, 65525, 65521, 11, 65527, 65521, 11, 65528, 65521, 11, 65530, 65521, 11, 4, 65522, 11, 15, 65522, 11, 16, 65522, 11, 65525, 65522, 11, 65526, 65522, 11, 65527, 65522, 11, 65528, 65522, 11, 65532, 65522, 11, 5, 65523, 11, 6, 65523, 11, 7, 65523, 11, 9, 65523, 11, 10, 65523, 11, 11, 65523, 11, 12, 65523, 11, 16, 65523, 11, 65523, 65523, 11, 65525, 65523, 11, 65526, 65523, 11, 65527, 65523, 11, 65528, 65523, 11, 65529, 65523, 11, 65530, 65523, 11, 65531, 65523, 11, 65532, 65523, 11, 65534, 65523, 11, 65535, 65523, 11, 0, 65524, 11, 1, 65524, 11, 2, 65524, 11, 3, 65524, 11, 4, 65524, 11, 5, 65524, 11, 6, 65524, 11, 7, 65524, 11, 8, 65524, 11, 9, 65524, 11, 10, 65524, 11, 12, 65524, 11, 13, 65524, 11, 14, 65524, 11, 15, 65524, 11, 16, 65524, 11, 19, 65524, 655371, 65523, 65524, 11, 65525, 65524, 11, 65526, 65524, 11, 65527, 65524, 11, 65528, 65524, 11, 65529, 65524, 11, 65530, 65524, 11, 65531, 65524, 11, 65532, 65524, 11, 65533, 65524, 11, 65534, 65524, 11, 65535, 65524, 11, 0, 65525, 11, 1, 65525, 11, 2, 65525, 11, 3, 65525, 11, 4, 65525, 11, 5, 65525, 11, 6, 65525, 11, 7, 65525, 11, 8, 65525, 11, 9, 65525, 11, 10, 65525, 11, 11, 65525, 11, 12, 65525, 11, 13, 65525, 11, 14, 65525, 11, 15, 65525, 11, 16, 65525, 11, 17, 65525, 655371, 18, 65525, 655371, 19, 65525, 655371, 22, 65525, 1441804, 65518, 65525, 1441803, 65519, 65525, 1441803, 65520, 65525, 1441803, 65521, 65525, 1048584, 65522, 65525, 1441803, 65523, 65525, 1441803, 65524, 65525, 11, 65525, 65525, 11, 65526, 65525, 11, 65527, 65525, 11, 65528, 65525, 11, 65529, 65525, 11, 65530, 65525, 11, 65531, 65525, 11, 65532, 65525, 11, 65533, 65525, 11, 65534, 65525, 11, 65535, 65525, 11, 0, 65526, 11, 1, 65526, 11, 2, 65526, 11, 3, 65526, 11, 4, 65526, 11, 5, 65526, 11, 6, 65526, 11, 7, 65526, 11, 8, 65526, 11, 9, 65526, 11, 10, 65526, 11, 11, 65526, 11, 12, 65526, 11, 13, 65526, 11, 14, 65526, 11, 15, 65526, 11, 16, 65526, 11, 17, 65526, 11, 18, 65526, 11, 19, 65526, 11, 20, 65526, 1441800, 21, 65526, 1441804, 22, 65526, 1441804, 23, 65526, 1441804, 65518, 65526, 1441803, 65519, 65526, 1441803, 65520, 65526, 1441803, 65521, 65526, 1048584, 65522, 65526, 1441803, 65523, 65526, 11, 65524, 65526, 11, 65525, 65526, 11, 65526, 65526, 11, 65527, 65526, 11, 65528, 65526, 11, 65529, 65526, 11, 65530, 65526, 11, 65531, 65526, 11, 65532, 65526, 11, 65533, 65526, 11, 65534, 65526, 11, 65535, 65526, 11, 0, 65527, 11, 1, 65527, 11, 2, 65527, 11, 3, 65527, 11, 4, 65527, 11, 5, 65527, 11, 6, 65527, 11, 7, 65527, 11, 8, 65527, 11, 9, 65527, 11, 10, 65527, 11, 11, 65527, 11, 12, 65527, 1048586, 13, 65527, 8, 14, 65527, 8, 15, 65527, 8, 16, 65527, 8, 17, 65527, 8, 18, 65527, 8, 19, 65527, 8, 20, 65527, 9, 21, 65527, 8, 22, 65527, 8, 23, 65527, 8, 24, 65527, 8, 65518, 65527, 1441803, 65519, 65527, 1441803, 65520, 65527, 1048588, 65521, 65527, 1048584, 65522, 65527, 1441803, 65523, 65527, 1441803, 65524, 65527, 11, 65525, 65527, 11, 65526, 65527, 11, 65527, 65527, 11, 65528, 65527, 11, 65529, 65527, 11, 65530, 65527, 11, 65531, 65527, 11, 65532, 65527, 11, 65533, 65527, 11, 65534, 65527, 11, 65535, 65527, 11, 0, 65528, 11, 1, 65528, 11, 2, 65528, 11, 3, 65528, 11, 4, 65528, 11, 5, 65528, 11, 6, 65528, 11, 7, 65528, 11, 8, 65528, 11, 9, 65528, 11, 10, 65528, 11, 11, 65528, 11, 12, 65528, 1048584, 13, 65528, 11, 14, 65528, 11, 15, 65528, 11, 16, 65528, 11, 17, 65528, 11, 18, 65528, 11, 19, 65528, 1441803, 20, 65528, 1441800, 21, 65528, 1441804, 22, 65528, 1441804, 23, 65528, 1441804, 65518, 65528, 1441803, 65519, 65528, 1441803, 65520, 65528, 1048588, 65521, 65528, 1048584, 65522, 65528, 1441803, 65523, 65528, 1441803, 65524, 65528, 11, 65525, 65528, 11, 65526, 65528, 11, 65527, 65528, 11, 65528, 65528, 11, 65529, 65528, 11, 65530, 65528, 11, 65531, 65528, 11, 65532, 65528, 11, 65533, 65528, 11, 65534, 65528, 11, 65535, 65528, 11, 0, 65529, 11, 1, 65529, 11, 2, 65529, 11, 3, 65529, 11, 4, 65529, 11, 5, 65529, 11, 6, 65529, 11, 7, 65529, 11, 8, 65529, 11, 9, 65529, 11, 10, 65529, 11, 11, 65529, 11, 12, 65529, 1048584, 13, 65529, 11, 14, 65529, 11, 15, 65529, 11, 16, 65529, 11, 17, 65529, 11, 18, 65529, 11, 19, 65529, 11, 20, 65529, 1441800, 21, 65529, 1441804, 22, 65529, 1441804, 65519, 65529, 1441803, 65520, 65529, 655372, 65521, 65529, 1048584, 65522, 65529, 11, 65523, 65529, 11, 65524, 65529, 11, 65525, 65529, 11, 65526, 65529, 11, 65527, 65529, 11, 65528, 65529, 11, 65529, 65529, 11, 65530, 65529, 11, 65531, 65529, 11, 65532, 65529, 11, 65533, 65529, 11, 65534, 65529, 11, 65535, 65529, 11, 0, 65530, 8, 1, 65530, 8, 2, 65530, 8, 3, 65530, 8, 4, 65530, 8, 5, 65530, 8, 6, 65530, 8, 7, 65530, 8, 8, 65530, 8, 9, 65530, 8, 10, 65530, 8, 11, 65530, 8, 12, 65530, 1048585, 13, 65530, 655368, 14, 65530, 655368, 15, 65530, 655368, 16, 65530, 655368, 17, 65530, 655368, 18, 65530, 655368, 19, 65530, 655368, 20, 65530, 14, 21, 65530, 1441804, 22, 65530, 1441804, 65519, 65530, 1441803, 65520, 65530, 655368, 65521, 65530, 1441801, 65522, 65530, 8, 65523, 65530, 8, 65524, 65530, 8, 65525, 65530, 8, 65526, 65530, 8, 65527, 65530, 8, 65528, 65530, 8, 65529, 65530, 8, 65530, 65530, 8, 65531, 65530, 8, 65532, 65530, 8, 65533, 65530, 8, 65534, 65530, 8, 65535, 65530, 8, 0, 65531, 11, 1, 65531, 11, 2, 65531, 11, 3, 65531, 11, 4, 65531, 11, 5, 65531, 11, 6, 65531, 11, 7, 65531, 11, 8, 65531, 11, 9, 65531, 11, 10, 65531, 11, 11, 65531, 11, 12, 65531, 1441800, 13, 65531, 11, 14, 65531, 11, 15, 65531, 11, 16, 65531, 11, 17, 65531, 11, 18, 65531, 655371, 19, 65531, 1048587, 20, 65531, 1441800, 21, 65531, 1441804, 22, 65531, 1441804, 65519, 65531, 1441803, 65520, 65531, 655372, 65521, 65531, 1441800, 65522, 65531, 11, 65523, 65531, 11, 65524, 65531, 11, 65525, 65531, 11, 65526, 65531, 11, 65527, 65531, 11, 65528, 65531, 11, 65529, 65531, 655371, 65530, 65531, 655371, 65531, 65531, 655371, 65532, 65531, 655371, 65533, 65531, 655371, 65534, 65531, 11, 65535, 65531, 11, 0, 65532, 8, 1, 65532, 8, 2, 65532, 8, 3, 65532, 1048590, 4, 65532, 8, 5, 65532, 8, 6, 65532, 8, 7, 65532, 9, 8, 65532, 8, 9, 65532, 8, 10, 65532, 8, 11, 65532, 8, 12, 65532, 9, 13, 65532, 655368, 14, 65532, 655368, 15, 65532, 655368, 16, 65532, 655368, 17, 65532, 655368, 18, 65532, 655368, 19, 65532, 655368, 20, 65532, 14, 21, 65532, 1441804, 22, 65532, 1441804, 65519, 65532, 1441803, 65520, 65532, 655372, 65521, 65532, 1441800, 65522, 65532, 11, 65523, 65532, 11, 65524, 65532, 11, 65525, 65532, 11, 65526, 65532, 11, 65527, 65532, 11, 65528, 65532, 1048586, 65529, 65532, 8, 65530, 65532, 8, 65531, 65532, 8, 65532, 65532, 1048590, 65533, 65532, 8, 65534, 65532, 8, 65535, 65532, 8, 0, 65533, 1048587, 1, 65533, 1048587, 2, 65533, 11, 3, 65533, 1048589, 4, 65533, 11, 5, 65533, 11, 6, 65533, 11, 7, 65533, 1441800, 8, 65533, 12, 9, 65533, 12, 10, 65533, 12, 11, 65533, 12, 12, 65533, 1441800, 13, 65533, 11, 14, 65533, 11, 15, 65533, 11, 16, 65533, 11, 17, 65533, 11, 18, 65533, 11, 19, 65533, 11, 20, 65533, 1441800, 21, 65533, 1441804, 22, 65533, 1441804, 65519, 65533, 1441803, 65520, 65533, 655372, 65521, 65533, 1441800, 65522, 65533, 11, 65523, 65533, 11, 65524, 65533, 11, 65525, 65533, 11, 65526, 65533, 11, 65527, 65533, 11, 65528, 65533, 1048584, 65529, 65533, 655371, 65530, 65533, 11, 65531, 65533, 11, 65532, 65533, 1048589, 65533, 65533, 11, 65534, 65533, 11, 65535, 65533, 11, 0, 65534, 655368, 1, 65534, 655368, 2, 65534, 655368, 3, 65534, 655369, 4, 65534, 655368, 5, 65534, 8, 6, 65534, 8, 7, 65534, 14, 8, 65534, 12, 9, 65534, 12, 10, 65534, 12, 11, 65534, 12, 12, 65534, 1441800, 13, 65534, 11, 14, 65534, 11, 15, 65534, 11, 16, 65534, 11, 17, 65534, 11, 18, 65534, 11, 19, 65534, 11, 20, 65534, 1441800, 21, 65534, 1441804, 22, 65534, 1441804, 65519, 65534, 1441803, 65520, 65534, 655368, 65521, 65534, 1441801, 65522, 65534, 8, 65523, 65534, 8, 65524, 65534, 8, 65525, 65534, 8, 65526, 65534, 8, 65527, 65534, 8, 65528, 65534, 9, 65529, 65534, 8, 65530, 65534, 8, 65531, 65534, 655368, 65532, 65534, 655369, 65533, 65534, 655368, 65534, 65534, 655368, 65535, 65534, 655368, 0, 65535, 11, 1, 65535, 11, 2, 65535, 655371, 3, 65535, 1441800, 4, 65535, 11, 5, 65535, 11, 6, 65535, 11, 7, 65535, 1441800, 8, 65535, 12, 9, 65535, 12, 10, 65535, 12, 11, 65535, 12, 12, 65535, 1441800, 13, 65535, 655368, 14, 65535, 655368, 15, 65535, 655368, 16, 65535, 655368, 17, 65535, 655368, 18, 65535, 655368, 19, 65535, 655368, 20, 65535, 14, 21, 65535, 1441804, 22, 65535, 1441804, 65519, 65535, 11, 65520, 65535, 11, 65521, 65535, 1441800, 65522, 65535, 11, 65523, 65535, 11, 65524, 65535, 11, 65525, 65535, 11, 65526, 65535, 11, 65527, 65535, 1048587, 65528, 65535, 1441800, 65529, 65535, 11, 65530, 65535, 11, 65531, 65535, 11, 65532, 65535, 1441800, 65533, 65535, 11, 65534, 65535, 11, 65535, 65535, 11 )
 }
 __meta__ = {
 "_editor_clip_": 0
@@ -462,9 +1331,215 @@ beat_manager_node = NodePath("../BeatManager")
 
 [node name="Protest" type="Spatial" parent="."]
 
-[node name="Timer" type="Timer" parent="."]
-wait_time = 900.0
+[node name="Goal" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3.0753 )
+script = ExtResource( 22 )
+
+[node name="Area" type="Area" parent="Goal"]
+
+[node name="CollisionShape" type="CollisionShape" parent="Goal/Area"]
+shape = SubResource( 11 )
+
+[node name="Timer" type="Timer" parent="Goal"]
+wait_time = 3.0
 one_shot = true
-[connection signal="timeout" from="Crowd/TaskTimer" to="Crowd" method="_on_TaskTimer_timeout"]
+
+[node name="Tween" type="Tween" parent="."]
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 600.0
+one_shot = true
+
+[node name="GoalIndicator" parent="." instance=ExtResource( 29 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, 1.748 )
+beat_manager_node = NodePath("../BeatManager")
+
+[node name="Border" type="Spatial" parent="."]
+
+[node name="StaticBody" type="StaticBody" parent="Border"]
+
+[node name="CollisionShape" type="CollisionShape" parent="Border/StaticBody"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -22.3568, 0, 0 )
+shape = SubResource( 12 )
+
+[node name="StaticBody2" type="StaticBody" parent="Border"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.98793, 0, 0 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Border/StaticBody2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 30.2765, 0, 0 )
+shape = SubResource( 12 )
+
+[node name="StaticBody3" type="StaticBody" parent="Border"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.98793, 0, 0 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Border/StaticBody3"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -7.50862, 0.0622787, -13.6001 )
+shape = SubResource( 13 )
+
+[node name="StaticBody4" type="StaticBody" parent="Border"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.98793, 0, 0 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Border/StaticBody4"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -7.55733, -0.074831, 23.6373 )
+shape = SubResource( 13 )
+
+[node name="StreetClosed" type="Spatial" parent="Border"]
+
+[node name="Sprite3D" type="Sprite3D" parent="Border/StreetClosed"]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -15.4694, 0.212837, 18.144 )
+texture = ExtResource( 31 )
+
+[node name="Sprite3D2" type="Sprite3D" parent="Border/StreetClosed"]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -14.6348, 0.212837, 18.144 )
+texture = ExtResource( 31 )
+
+[node name="Sprite3D3" type="Sprite3D" parent="Border/StreetClosed"]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -7.40118, 0.212837, 18.144 )
+texture = ExtResource( 31 )
+
+[node name="Sprite3D4" type="Sprite3D" parent="Border/StreetClosed"]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -6.65928, 0.212837, 18.144 )
+texture = ExtResource( 31 )
+
+[node name="Sprite3D5" type="Sprite3D" parent="Border/StreetClosed"]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -1.3871, 0.212837, 18.144 )
+texture = ExtResource( 31 )
+
+[node name="Sprite3D6" type="Sprite3D" parent="Border/StreetClosed"]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -0.528837, 0.212837, 18.144 )
+texture = ExtResource( 31 )
+
+[node name="Sprite3D7" type="Sprite3D" parent="Border/StreetClosed"]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 6.63152, 0.212837, 18.144 )
+texture = ExtResource( 31 )
+
+[node name="Sprite3D8" type="Sprite3D" parent="Border/StreetClosed"]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 7.39169, 0.212837, 18.144 )
+texture = ExtResource( 31 )
+
+[node name="Sprite3D9" type="Sprite3D" parent="Border/StreetClosed"]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 14.6256, 0.212837, 18.144 )
+texture = ExtResource( 31 )
+
+[node name="Sprite3D10" type="Sprite3D" parent="Border/StreetClosed"]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 15.3858, 0.212837, 18.144 )
+texture = ExtResource( 31 )
+
+[node name="Sprite3D11" type="Sprite3D" parent="Border/StreetClosed"]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 24.606, 0.212837, 18.144 )
+texture = ExtResource( 31 )
+
+[node name="Sprite3D12" type="Sprite3D" parent="Border/StreetClosed"]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 25.4887, 0.212837, 18.144 )
+texture = ExtResource( 31 )
+
+[node name="Sprite3D13" type="Sprite3D" parent="Border/StreetClosed"]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 26.3087, 0.212837, 17.2821 )
+texture = ExtResource( 31 )
+
+[node name="Sprite3D14" type="Sprite3D" parent="Border/StreetClosed"]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 26.3087, 0.212837, 16.5883 )
+texture = ExtResource( 31 )
+
+[node name="Sprite3D15" type="Sprite3D" parent="Border/StreetClosed"]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 26.3087, 0.212837, 13.4978 )
+texture = ExtResource( 31 )
+
+[node name="Sprite3D16" type="Sprite3D" parent="Border/StreetClosed"]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 26.3087, 0.212837, 12.6569 )
+texture = ExtResource( 31 )
+
+[node name="Sprite3D17" type="Sprite3D" parent="Border/StreetClosed"]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 26.3087, 0.212837, 9.42713 )
+texture = ExtResource( 31 )
+
+[node name="Sprite3D18" type="Sprite3D" parent="Border/StreetClosed"]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 26.3087, 0.212837, 8.57104 )
+texture = ExtResource( 31 )
+
+[node name="Sprite3D19" type="Sprite3D" parent="Border/StreetClosed"]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 26.3087, 0.212837, 5.41909 )
+texture = ExtResource( 31 )
+
+[node name="Sprite3D20" type="Sprite3D" parent="Border/StreetClosed"]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 26.3087, 0.212837, 4.56301 )
+texture = ExtResource( 31 )
+
+[node name="Sprite3D21" type="Sprite3D" parent="Border/StreetClosed"]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 26.3087, 0.212837, -0.573503 )
+texture = ExtResource( 31 )
+
+[node name="Sprite3D22" type="Sprite3D" parent="Border/StreetClosed"]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 26.3087, 0.212837, -1.37894 )
+texture = ExtResource( 31 )
+
+[node name="Sprite3D23" type="Sprite3D" parent="Border/StreetClosed"]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 26.3087, 0.212837, -6.59328 )
+texture = ExtResource( 31 )
+
+[node name="Sprite3D24" type="Sprite3D" parent="Border/StreetClosed"]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 26.3087, 0.212837, -7.29371 )
+texture = ExtResource( 31 )
+
+[node name="Sprite3D25" type="Sprite3D" parent="Border/StreetClosed"]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 25.4137, 0.212837, -8.34436 )
+texture = ExtResource( 31 )
+
+[node name="Sprite3D26" type="Sprite3D" parent="Border/StreetClosed"]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 24.5576, 0.212837, -8.34436 )
+texture = ExtResource( 31 )
+
+[node name="Sprite3D27" type="Sprite3D" parent="Border/StreetClosed"]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -16.5234, 0.212837, -3.35167 )
+texture = ExtResource( 31 )
+
+[node name="Sprite3D28" type="Sprite3D" parent="Border/StreetClosed"]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -16.5234, 0.212837, -2.76162 )
+texture = ExtResource( 31 )
+
+[node name="Sprite3D29" type="Sprite3D" parent="Border/StreetClosed"]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -16.5234, 0.212837, 0.642481 )
+texture = ExtResource( 31 )
+
+[node name="Sprite3D30" type="Sprite3D" parent="Border/StreetClosed"]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -16.5234, 0.212837, 1.41408 )
+texture = ExtResource( 31 )
+
+[node name="Sprite3D31" type="Sprite3D" parent="Border/StreetClosed"]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -16.5234, 0.212837, 4.56333 )
+texture = ExtResource( 31 )
+
+[node name="Sprite3D32" type="Sprite3D" parent="Border/StreetClosed"]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -16.5234, 0.212837, 5.48958 )
+texture = ExtResource( 31 )
+
+[node name="Sprite3D33" type="Sprite3D" parent="Border/StreetClosed"]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -16.5234, 0.212837, 8.66442 )
+texture = ExtResource( 31 )
+
+[node name="Sprite3D34" type="Sprite3D" parent="Border/StreetClosed"]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -16.5234, 0.212837, 9.52249 )
+texture = ExtResource( 31 )
+
+[node name="Sprite3D35" type="Sprite3D" parent="Border/StreetClosed"]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -16.5234, 0.212837, 12.5257 )
+texture = ExtResource( 31 )
+
+[node name="Sprite3D36" type="Sprite3D" parent="Border/StreetClosed"]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -16.5234, 0.212837, 13.4985 )
+texture = ExtResource( 31 )
+
+[node name="Sprite3D37" type="Sprite3D" parent="Border/StreetClosed"]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -16.5234, 0.212837, 16.5162 )
+texture = ExtResource( 31 )
+
+[node name="Sprite3D38" type="Sprite3D" parent="Border/StreetClosed"]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -16.5234, 0.212837, 17.4162 )
+texture = ExtResource( 31 )
 [connection signal="finished" from="BeatManager/AudioStreamPlayer" to="BeatManager" method="_on_AudioStreamPlayer_finished"]
+[connection signal="timeout" from="Crowd/TaskTimer" to="Crowd" method="_on_TaskTimer_timeout"]
+[connection signal="pressed" from="UILayer/StartMenu/Buttons/StartButton" to="UILayer/StartMenu" method="_on_StartButton_pressed"]
+[connection signal="pressed" from="UILayer/StartMenu/Buttons/ExitButton" to="UILayer/StartMenu" method="_on_ExitButton_pressed"]
+[connection signal="body_entered" from="Goal/Area" to="Goal" method="_on_Area_body_entered"]
+[connection signal="timeout" from="Goal/Timer" to="Goal" method="_on_Timer_timeout"]
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

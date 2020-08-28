@@ -8,17 +8,27 @@ onready var host = get_parent().get_parent()
 onready var container = $ColorRect/HBoxContainer
 onready var tween = $Tween
 
+onready var box: TextureRect = $ColorRect
+onready var label = $ColorRect/Label
+
 var task_symbol_scene = preload("res://UI/Notifications/InputTaskSymbol.tscn")
 var current_task 
 	
 var max_completion = -1
 
+var textures = {
+	"purple": preload("res://Sprites/UI/textbox.png"),
+	"red": preload("res://Sprites/UI/textbox_yellowt.png"),
+	"yellow": preload("res://Sprites/UI/textbox_yellow2.png")
+}
+
 func setup() -> void:
-	Refs.beat_manager.connect("beat_input_started", self, "_on_beat_input_started")
-	Refs.beat_manager.connect("beat_input_ended", self, "_on_beat_input_ended")
+	print("setup")
+
 	
 
 func _draw():
+	
 	draw_line(
 		Vector2.ZERO + Vector2(20, 75), 
 		Vector2.ZERO + Vector2(8, 95),
@@ -26,15 +36,24 @@ func _draw():
 		)
 
 func _ready() -> void:
+	$Clock.visible = false
 	visible = false
 	var screen_pos = get_viewport().get_camera().unproject_position(host.global_transform.origin)
 	rect_position = screen_pos.floor() + Vector2(-4, - 140)
 
+	Refs.beat_manager.connect("beat_input_started", self, "_on_beat_input_started")
+	Refs.beat_manager.connect("beat_input_ended", self, "_on_beat_input_ended")
 
 func _process(delta: float) -> void:
 	var screen_pos = get_viewport().get_camera().unproject_position(host.global_transform.origin)
 	rect_position = screen_pos.floor() + Vector2(-4, - 140)
 	update()
+	
+	if current_task:
+		if current_task.timer.time_left > 0:
+			var progress = current_task.timer.time_left /  current_task.timer.wait_time
+			$Clock.value  =  100 - progress * 100
+	
 
 func display(task: Task) -> void:
 	"""
@@ -53,6 +72,25 @@ func display(task: Task) -> void:
 		var symbol = task_symbol_scene.instance()
 		container.add_child(symbol)
 		symbol.setup(t)
+		symbol.pressed = false
+	
+	if current_task.timer.time_left > 0:
+		box.texture = textures["red"]
+		$Clock.visible = true
+		$Clock.value = 0
+	else:
+		box.texture = textures["purple"]
+	
+func show_message(line: String, duration: float = 2):
+	box.texture = textures["yellow"]
+	visible = true
+	rect_min_size = Vector2(50 + line.length() * 20 , 75)
+	rect_size = rect_min_size
+	label.visible = true
+	label.text = line
+	yield(get_tree().create_timer(duration), "timeout")
+	label.visible = false
+	visible = false
 		
 		
 func remove() -> void:
@@ -73,6 +111,8 @@ func remove() -> void:
 	for symbol in container.get_children():
 		symbol.queue_free()
 	visible = false
+	
+	$Clock.visible = false
 		
 func _on_completion_progress(n):
 	"""
@@ -99,15 +139,12 @@ func _on_completion_progress(n):
 	
 
 func _on_beat_input_started() -> void:
-	#$ColorRect/HBoxContainer.modulate = Color(1.0, 1.0, 1.0, 1.0)
-	#$ColorRect/HBoxContainer.rect_scale = Vector2(1.05, 1.05)
-	for prompt in $ColorRect/HBoxContainer.get_children():
+	#print("container beat")
+	for prompt in container.get_children():
 		if !prompt.pressed:
 			prompt.down()
 	
 func _on_beat_input_ended() -> void:
-	#$ColorRect/HBoxContainer.modulate = Color(1.0, 1.0, 1.0, 0.7)
-	#$ColorRect/HBoxContainer.rect_scale = Vector2(1.0, 1.0)
-	for prompt in $ColorRect/HBoxContainer.get_children():
+	for prompt in container.get_children():
 		if !prompt.pressed:
 			prompt.up()
