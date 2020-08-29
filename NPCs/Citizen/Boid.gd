@@ -49,7 +49,8 @@ func _ready() -> void:
 	#randomize color modulate 
 	sprite.texture = skins[randi() % skins.size()]
 	sprite.modulate = Color(rand_range(0.8, 1.1), rand_range(0.8,1.1), rand_range(0.8, 1.1), 1)
-	sprite.scale.y = rand_range(0.7, 1.0)
+	sprite.scale.y = rand_range(0.9, 1.0)
+	sprite.scale.x = rand_range(1.0, 1.05)
 
 	if randf() < 0.5:
 		sprite.flip_h = true

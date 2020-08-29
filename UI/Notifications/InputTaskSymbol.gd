@@ -22,6 +22,8 @@ var textures_down = {
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	set("index", 1)
+	$CPUParticles2D.set("index", 0)
 	pressed = false
 	pass # Replace with function body.
 

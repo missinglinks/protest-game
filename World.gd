@@ -105,3 +105,6 @@ func _on_player_entered_goal():
 	ending.display(crowd.size)
 	
 	
+func _process(delta):
+	if Input.is_action_just_pressed("return"):
+		get_tree().reload_current_scene()

@@ -23,30 +23,36 @@ var textures = {
 }
 
 func setup() -> void:
-	print("setup")
+	#print("setup")
+	pass
 
 	
 
 func _draw():
 	
 	draw_line(
-		Vector2.ZERO + Vector2(20, 75), 
-		Vector2.ZERO + Vector2(8, 95),
+		Vector2.ZERO + Vector2(15, 75), 
+		Vector2.ZERO + Vector2(12, 90),
 		Color(1.0, 1.0, 1.0, 1.0)
 		)
+	draw_line(
+		Vector2.ZERO + Vector2(16, 75), 
+		Vector2.ZERO + Vector2(13, 90),
+		Color(1.0, 1.0, 1.0, 1.0)
+		)		
 
 func _ready() -> void:
 	$Clock.visible = false
 	visible = false
 	var screen_pos = get_viewport().get_camera().unproject_position(host.global_transform.origin)
-	rect_position = screen_pos.floor() + Vector2(-4, - 140)
+	rect_position = screen_pos.floor() + Vector2(-14, - 150)
 
 	Refs.beat_manager.connect("beat_input_started", self, "_on_beat_input_started")
 	Refs.beat_manager.connect("beat_input_ended", self, "_on_beat_input_ended")
 
 func _process(delta: float) -> void:
 	var screen_pos = get_viewport().get_camera().unproject_position(host.global_transform.origin)
-	rect_position = screen_pos.floor() + Vector2(-4, - 140)
+	rect_position = screen_pos.floor() + Vector2(-14, - 150)
 	update()
 	
 	if current_task:
@@ -129,7 +135,8 @@ func _on_completion_progress(n):
 			symbol.down()
 			symbol.modulate = Color(0.6, 0.9, 0.7, 1.0)
 			if max_completion < i:
-				symbol.emit_particles()
+				if symbol.input_type != InputManager.BLANK:
+					symbol.emit_particles()
 				max_completion = i
 		else:
 			symbol.pressed = false

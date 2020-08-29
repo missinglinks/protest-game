@@ -92,3 +92,7 @@ func _on_StartButton_pressed():
 	yield(get_tree().create_timer(1), "timeout")
 	
 	emit_signal("game_started")
+
+
+func _on_ControlsButton_pressed():
+	$Controls.visible = !$Controls.visible
